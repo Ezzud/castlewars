@@ -4,6 +4,7 @@ package fr.ezzud.castlewar.methods;
 import java.util.List;
 
 import fr.ezzud.castlewar.api.CastleTeam;
+import fr.ezzud.castlewar.api.GameStateManager;
 public class inATeam {
 	public static boolean checkTeam(String player) {
 		
@@ -54,5 +55,15 @@ public class inATeam {
 
 		
 		return null;
+	}
+	
+	public static boolean isKing(String player) {
+		if(player.equalsIgnoreCase(GameStateManager.team1King)) {
+			return true;
+		}
+		if(player.equalsIgnoreCase(GameStateManager.team2King)) {
+			return true;
+		}
+		return false;
 	}
 }

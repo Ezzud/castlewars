@@ -39,7 +39,14 @@ public class configManager{
 		if(!f.exists()) {
 			plugin.saveResource("guis.yml", false);
 		}
-	}	
+	}
+	
+	public static void saveData() {
+		File f = new File("plugins/CastleWars/data.yml");
+		if(!f.exists()) {
+			plugin.saveResource("data.yml", false);
+		}
+	}
 	
 	public static YamlConfiguration getKits() {
 		saveKits();
@@ -67,5 +74,14 @@ public class configManager{
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(rd);
 		return config;
 	}	
+	
+	public static YamlConfiguration getData(){
+		saveData();
+		InputStream is = null;
+		try {is = new FileInputStream("plugins/CastleWars/data.yml");} catch (FileNotFoundException e) {e.printStackTrace();}
+		Reader rd = new InputStreamReader(is);
+		YamlConfiguration config = YamlConfiguration.loadConfiguration(rd);
+		return config;
+	}
 	
 }

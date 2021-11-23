@@ -34,7 +34,10 @@ public class Damage implements Listener {
 				   Player damager = (Player) event.getDamager();
 				   Player victim = (Player) event.getEntity();
 				   if(inATeam.whichTeam(victim.getName()).equals(inATeam.whichTeam(damager.getName()))) {
-					   event.setCancelled(true);
+					   if(event.isCancelled() == false) {
+						   event.setCancelled(true);  
+					   }
+					   
 				   }
 			   }
 		   }

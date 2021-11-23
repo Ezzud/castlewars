@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import fr.ezzud.castlewar.api.GameStateManager;
 import fr.ezzud.castlewar.commands.CommandHandler;
 import fr.ezzud.castlewar.events.Damage;
+import fr.ezzud.castlewar.events.Death;
 import fr.ezzud.castlewar.events.Drop;
 import fr.ezzud.castlewar.events.FoodLevel;
 import fr.ezzud.castlewar.events.Interaction;
@@ -24,6 +25,7 @@ public class Main extends JavaPlugin implements Listener {
 	  public static YamlConfiguration teams;
 	  public static YamlConfiguration kits;
 	  public static YamlConfiguration guis;
+	  public static YamlConfiguration data;
 	   public static Main getInstance() {
 		      return plugin;
 	   }
@@ -37,6 +39,10 @@ public class Main extends JavaPlugin implements Listener {
 	   public static YamlConfiguration getGUIs() {
 		      return guis;
 	   }
+	   public static YamlConfiguration getData() {
+		      return data;
+	   }
+	   
 	   
 	@Override
 	public void onEnable() {
@@ -53,6 +59,9 @@ public class Main extends JavaPlugin implements Listener {
 		configManager.saveGUIs();
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bguis.yml &aloaded"));
 		guis = configManager.getGUIs();
+		configManager.saveData();
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bdata.yml &aloaded"));
+		data = configManager.getData();
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
 		pm.registerEvents(new onInvClick(this), this);
@@ -63,6 +72,7 @@ public class Main extends JavaPlugin implements Listener {
 		pm.registerEvents(new Damage(this), this);
 		pm.registerEvents(new FoodLevel(this), this);
 		pm.registerEvents(new Leave(this), this);
+		pm.registerEvents(new Death(this), this);
 		this.getCommand("castlewar").setExecutor(new CommandHandler());
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &aSuccessfully loaded plugin!"));
 	}

@@ -26,8 +26,11 @@ import net.md_5.bungee.api.ChatColor;
 public class onInvClick implements Listener {
     Main plugin;
 	YamlConfiguration guis = Main.guis;
+	YamlConfiguration data = Main.data;
+	YamlConfiguration kits = Main.kits;
 	YamlConfiguration team = Main.teams;
 	ConfigurationSection chooseTeam = guis.getConfigurationSection("chooseTeam");
+	ConfigurationSection chooseKit = guis.getConfigurationSection("chooseKit");
 	ConfigurationSection team1 = guis.getConfigurationSection("chooseTeam.chooseItems.team1");
 	ConfigurationSection team2 = guis.getConfigurationSection("chooseTeam.chooseItems.team2");
 	ConfigurationSection none = guis.getConfigurationSection("chooseTeam.chooseItems.none");
@@ -47,7 +50,46 @@ public class onInvClick implements Listener {
 	       	 
 	        }			
 		}
-
+		if (e.getView().getTitle().equals(ChatColor.translateAlternateColorCodes('&', chooseKit.getString("title")))) {
+		    final ItemStack clickedItem = e.getCurrentItem();
+		    if (clickedItem == null || clickedItem.getType().isAir()) return;	
+		    final Player player = (Player) e.getWhoClicked();
+		    ConfigurationSection items = chooseKit.getConfigurationSection("chooseItems");
+		    for(int i = 0; i < items.getKeys(false).size(); i++) {
+		    	 ConfigurationSection item = items.getConfigurationSection(String.valueOf(i));
+		    	 if(clickedItem.getItemMeta().getDisplayName().contains(ChatColor.translateAlternateColorCodes('&', item.getString("item").split(",")[2]))) {
+		         	String permission = kits.getConfigurationSection("kits." + item.getString("kit")).getString("permission");
+		        	if(data.getString(String.valueOf(player.getUniqueId())) == null) {
+						data.set(String.valueOf(player.getUniqueId()), plugin.getConfig().getString("default_kit"));
+		    			try {
+							data.save(new File("plugins/CastleWars/data.yml"));
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+		    			Main.data = configManager.getData();
+		        	}
+		         	if (!player.hasPermission(permission) && !player.isOp()) {
+		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have permission to use this kit!"));
+		        		return;
+		        	} else if(data.getString(String.valueOf(player.getUniqueId())).equalsIgnoreCase(item.getString("kit"))) {
+		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cKit already selected"));
+		        		return;
+		        	}
+					data.set(String.valueOf(player.getUniqueId()), item.getString("kit"));
+	    			try {
+						data.save(new File("plugins/CastleWars/data.yml"));
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+	    			Main.data = configManager.getData();
+	    			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eYou selected the kit " + item.getString("kit")));
+	        	       	
+		         	
+		         	
+		         	
+				 }
+		    }
+		}
 	    if (e.getView().getTitle().equals(ChatColor.translateAlternateColorCodes('&', chooseTeam.getString("title")))) {
 		    e.setCancelled(true);
 		   	   int maxPlayer = plugin.getConfig().getInt("maxPlayers");
@@ -101,7 +143,7 @@ public class onInvClick implements Listener {
 			    			player.sendMessage("Team full");
 			    			return;
 			    		}	
-			    		if(newTeam.size() + 1 >= CastleTeam.getMembers("team2").size() - 1) {
+			    		if(newTeam.size() + 1 > CastleTeam.getMembers("team2").size()) {
 			    			player.sendMessage("Teams are not balanced");
 			    			return;
 			    		}
@@ -176,7 +218,7 @@ public class onInvClick implements Listener {
 			    			player.sendMessage("Team full");
 			    			return;
 			    		}	
-			    		if(newTeam.size() + 1 >= CastleTeam.getMembers("team2").size() - 1) {
+			    		if(newTeam.size() + 1 > CastleTeam.getMembers("team2").size()) {
 			    			player.sendMessage("Teams are not balanced");
 			    			return;
 			    		}

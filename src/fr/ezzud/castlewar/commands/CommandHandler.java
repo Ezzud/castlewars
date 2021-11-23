@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 import fr.ezzud.castlewar.Main;
 import fr.ezzud.castlewar.api.GameStateManager;
 import fr.ezzud.castlewar.commands.admin.reloadCMD;
-import fr.ezzud.castlewar.commands.players.GUI;
+import fr.ezzud.castlewar.commands.players.kitsCMD;
+import fr.ezzud.castlewar.commands.players.teamCMD;
+import fr.ezzud.castlewar.methods.inATeam;
 
 public class CommandHandler implements CommandExecutor {
     static Main plugin = Main.getInstance();
@@ -23,11 +25,17 @@ public class CommandHandler implements CommandExecutor {
 	   	switch(args[0]) {
 	   		case "menu":
 	   			if(GameStateManager.getGameState() == false) {
-	   				new GUI(player);
+	   				new teamCMD(player);
 	   			}
 	   			break;
 	   		case "reload":
 	   			new reloadCMD(player);
+	   			break;
+	   		case "kits":
+	   			if(inATeam.isKing(player.getName()) == false) {
+	   				new kitsCMD(player);
+	   			}
+	   			
 	   			break;
 	   		default:
 	   			sender.sendMessage("No command");

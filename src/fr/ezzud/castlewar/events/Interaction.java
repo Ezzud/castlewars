@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import fr.ezzud.castlewar.Main;
 import fr.ezzud.castlewar.api.GameStateManager;
-import fr.ezzud.castlewar.commands.players.GUI;
+import fr.ezzud.castlewar.commands.players.teamCMD;
 import net.md_5.bungee.api.ChatColor;
 
 public class Interaction implements Listener {
@@ -27,7 +27,7 @@ public class Interaction implements Listener {
          if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', itemInfo[2]))) {
              if(e.getPlayer().getItemInHand().getType() == Material.valueOf(itemInfo[0])) {
             	 e.setCancelled(true);
-            	 new GUI(e.getPlayer());
+            	 new teamCMD(e.getPlayer());
              }
         	 
            }

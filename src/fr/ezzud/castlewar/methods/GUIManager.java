@@ -1,5 +1,7 @@
 package fr.ezzud.castlewar.methods;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,13 +25,76 @@ public class GUIManager {
 		this.player = player;
 	}
 	YamlConfiguration guis = Main.guis;
+	YamlConfiguration data = Main.data;
+	YamlConfiguration kits = Main.kits;
 	YamlConfiguration teams = Main.teams;
 	
-	ConfigurationSection team1Item = guis.getConfigurationSection("chooseTeam.chooseItems.team1");
-	ConfigurationSection team2Item = guis.getConfigurationSection("chooseTeam.chooseItems.team2");
-	ConfigurationSection noneItem = guis.getConfigurationSection("chooseTeam.chooseItems.none");
-	ConfigurationSection items = guis.getConfigurationSection("chooseTeam.items");
+
+	public void initializeKitsGUI(Inventory inv) {
+		ConfigurationSection chooseItem = guis.getConfigurationSection("chooseKit.chooseItems");
+    	List<Integer> usedPosition = new ArrayList<Integer>();
+        for(int i = 0; i < chooseItem.getKeys(false).size(); i++) {
+        	ConfigurationSection itemSec = chooseItem.getConfigurationSection(String.valueOf(i));
+        	usedPosition.add(itemSec.getInt("position"));
+        	String[] kitInfo = itemSec.getString("item").split(",");
+        	List<String> kitDesc = new ArrayList<String>();
+        	String permission = kits.getConfigurationSection("kits." + itemSec.getString("kit")).getString("permission");
+        	if(data.getString(String.valueOf(player.getUniqueId())) == null) {
+				data.set(String.valueOf(player.getUniqueId()), plugin.getConfig().getString("default_kit"));
+    			try {
+					data.save(new File("plugins/CastleWars/data.yml"));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+    			Main.data = configManager.getData();
+        	}
+        	if (!player.hasPermission(permission) && !player.isOp()) {
+        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', "&cYou don't have permission to use this kit!"));
+        	} else if(data.getString(String.valueOf(player.getUniqueId())).equalsIgnoreCase(itemSec.getString("kit"))) {
+        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', "&cKit already selected"));
+        	} else {
+        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', "&aClick to select this kit!"));
+        	}
+        	
+    		Iterator<String> kitLore = itemSec.getStringList("lore").iterator();
+            while(kitLore.hasNext()) {
+                String text = kitLore.next();
+                text = ChatColor.translateAlternateColorCodes('&', text);
+                kitDesc.add(text);
+            }
+            
+        	inv.setItem(itemSec.getInt("position"), createGuiItem(Material.valueOf(kitInfo[0]), 1, Byte.parseByte(kitInfo[1]), ChatColor.translateAlternateColorCodes('&', kitInfo[2]), kitDesc));
+        }
+
+        for(int i = 0; i < guis.getConfigurationSection("chooseKit.items").getKeys(false).size(); i++) {
+        	ConfigurationSection item = guis.getConfigurationSection("chooseKit.items." + String.valueOf(i));
+        	String[] itemInfo = item.getString("item").split(",");
+        	usedPosition.add(item.getInt("position"));
+      	   	List<String> itemList = new ArrayList<String>();;
+     		Iterator<String> itemIt = item.getStringList("lore").iterator();
+            while(itemIt.hasNext()) {
+                 String text = itemIt.next();
+                 text = ChatColor.translateAlternateColorCodes('&', text);
+                 itemList.add(text);
+             }
+             inv.setItem(item.getInt("position"), createGuiItem(Material.valueOf(itemInfo[0]), Integer.parseInt(itemInfo[2]), Byte.parseByte(itemInfo[1]), ChatColor.translateAlternateColorCodes('&', itemInfo[3]), itemList));
+
+        }
+        
+        for(int i = 0; i < guis.getConfigurationSection("chooseKit").getInt("rows")*9; i++) {
+        	if(usedPosition.contains(i) == false) {
+            	String item = guis.getConfigurationSection("chooseKit").getString("replaceEmptyCaseBy");
+            	String[] itemInfo = item.split(",");   
+            	inv.setItem(i, createGuiItem(Material.valueOf(itemInfo[0]), 1, Byte.parseByte(itemInfo[1]), ChatColor.translateAlternateColorCodes('&', itemInfo[2]), null));
+        	}
+
+        }
+	}
     public void initializeTeamGUI(Inventory inv) {
+    	ConfigurationSection team1Item = guis.getConfigurationSection("chooseTeam.chooseItems.team1");
+    	ConfigurationSection team2Item = guis.getConfigurationSection("chooseTeam.chooseItems.team2");
+    	ConfigurationSection noneItem = guis.getConfigurationSection("chooseTeam.chooseItems.none");
+    	ConfigurationSection items = guis.getConfigurationSection("chooseTeam.items");
    	   int maxPlayer = plugin.getConfig().getInt("maxPlayers");
    	   if(maxPlayer % 2 == 1) {
    		   maxPlayer++;
