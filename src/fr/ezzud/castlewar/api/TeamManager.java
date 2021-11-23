@@ -1,22 +1,29 @@
 package fr.ezzud.castlewar.api;
 
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import fr.ezzud.castlewar.Main;
 
 public class TeamManager {
 	static Main plugin = Main.getInstance();
-	private CastleTeam team1;
-	private CastleTeam team2;
+	ConfigurationSection team1Info = plugin.getConfig().getConfigurationSection("team1");
+	ConfigurationSection team2Info = plugin.getConfig().getConfigurationSection("team2");
+	private static CastleTeam team1;
+	private static CastleTeam team2;
+	YamlConfiguration teams = Main.teams;
 	public TeamManager() {
-		this.team1 = new CastleTeam("team1");
-		this.team2 = new CastleTeam("team2");
+		team1 = new CastleTeam("team1");
+		team2 = new CastleTeam("team2");
 	}
 	
-	public CastleTeam getTeam1() {
-		return this.team1;		
+	public static CastleTeam getTeam1() {
+		return team1;		
 	}
 	
-	public CastleTeam getTeam2() {
-		return this.team2;		
+	public static CastleTeam getTeam2() {
+		return team2;		
 	}
+	
+
 	
 }

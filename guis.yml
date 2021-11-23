@@ -1,0 +1,28 @@
+chooseTeam:
+   title: "&eChoose your team"
+   rows: 3
+   replaceEmptyCaseBy: STAINED_GLASS_PANE,0,&r
+   items:
+      "0":
+         item: BOOKSHELF,0,1,&dHow to play?
+         position: 4
+         lore: 
+            - "&fAs a &7Soldier&f, your objective is to kill the enemy &eKing"
+            - "&fYou have some kits that can help you"
+            - "&fAs a &eKing&f, you have to survive and kill the enemy &eKing"
+   chooseItems:
+      team1: 
+         item: BANNER,12,&9Choose blue team
+         position: 11
+         lore:
+         - "&bLine1"
+      team2: 
+         item: BANNER,1,&cChoose red team
+         position: 15
+         lore:
+         - "&eLine1"
+      none: 
+         item: BARRIER,0,Random team
+         position: 13
+         lore:
+         - "&aLine1"

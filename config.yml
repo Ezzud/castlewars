@@ -1,91 +1,29 @@
 prefix: "&6[&eCastleWar&6] &7"
 checkForUpdate: true
 stopServerAtEnd: false
+minPlayers: 2
+maxPlayers: 20
+spawnGamemode: ADVENTURE
 
+teamChooseItem: BANNER,0,&eChoose your team
+lobby_spawnpoint: 0,80,0,10,10,world
 
 team1:
    name: "Blue"
    color: "&9"
-   soldier_spawnpoint: 0,80,-100
-   king_spawnpoint: 0,80,-100
+   soldier_spawnpoint: 0,80,-100,10,10,world
+   king_spawnpoint: 0,80,-100,10,10,world
    
 team2:
    name: "Red"
    color: "&c"
-   soldier_spawnpoint: 0,80,-100
-   king_spawnpoint: 0,80,-100
+   soldier_spawnpoint: 0,80,-100,10,10,world
+   king_spawnpoint: 0,80,-100,10,10,world
    
-soldier_color: "&7"
-king_color: "&e"
+rankType: "suffix"   
+soldier_rank: "&7"
+king_rank: "&e[KING]"
 
-
-king:
-   items:
-      "0":
-         id: "272"
-         quantity: 1
-         name: "Stone Sword"
-         enchantments:
-               - DAMAGE_ALL,1
-   effects:
-      - SPEED,10,1
-   armor:
-      helmet: 
-            id: 306
-            name: "Cool Helmet"
-            enchantments:
-               - PROTECTION_ENVIRONMENTAL, 1
-      chestplate: 
-            id: 307
-            name: "Cool Chestplate"
-            enchantments:
-               - PROTECTION_ENVIRONMENTAL, 1
-      leggings: 
-            id: 308
-            name: "Cool Leggings"
-            enchantments:
-               - PROTECTION_ENVIRONMENTAL, 1
-      boots: 
-            id: 309
-            name: "Cool Boots"
-            enchantments:
-               - PROTECTION_ENVIRONMENTAL, 1
-
-
-kits:
-   knight:
-      name: "Knight"
-      permission: 'castle.kits.knight'
-      description: "Knight kit"
-      effects:
-         - SPEED,10,1
-      items:
-         "0":
-            id: "272"
-            quantity: 1
-            name: "Stone Sword"
-            enchantments:
-               - DAMAGE_ALL,1
-      armor:
-         helmet: 
-               id: 306
-               name: "Cool Helmet"
-               enchantments:
-                  - PROTECTION_ENVIRONMENTAL, 1
-         chestplate: 
-               id: 307
-               name: "Cool Chestplate"
-               enchantments:
-                  - PROTECTION_ENVIRONMENTAL, 1
-         leggings: 
-               id: 308
-               name: "Cool Leggings"
-               enchantments:
-                  - PROTECTION_ENVIRONMENTAL, 1
-         boots: 
-               id: 309
-               name: "Cool Boots"
-               enchantments:
-                  - PROTECTION_ENVIRONMENTAL, 1
+default_kit: "knight"
                   
           

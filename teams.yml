@@ -1,8 +1,5 @@
-team1:
-   - Soldier1
-   
+team1: 
+   - 0
+
 team2:
-   - Soldier2
-   
-team1_king: King1
-team2_king: King2
+   - 0
