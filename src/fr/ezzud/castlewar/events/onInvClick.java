@@ -17,6 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import fr.ezzud.castlewar.Main;
 import fr.ezzud.castlewar.api.CastleTeam;
 import fr.ezzud.castlewar.api.TeamManager;
+import fr.ezzud.castlewar.commands.players.kitsCMD;
+import fr.ezzud.castlewar.commands.players.teamCMD;
+import fr.ezzud.castlewar.gui.KitsGUI;
 import fr.ezzud.castlewar.gui.TeamGUI;
 import fr.ezzud.castlewar.methods.GUIManager;
 import fr.ezzud.castlewar.methods.configManager;
@@ -40,17 +43,29 @@ public class onInvClick implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		if(!e.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) {
-	    	String[] itemInfo = plugin.getConfig().getString("teamChooseItem").split(",");
+	    	String[] teamItemInfo = plugin.getConfig().getConfigurationSection("teamChooseItem").getString("item").split(",");
 	    	if(e.getCurrentItem() == null) return;
-	        if (e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', itemInfo[2]))) {
-	            if(e.getCurrentItem().getType() == Material.valueOf(itemInfo[0])) {
+	        if (e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', teamItemInfo[2]))) {
+	            if(e.getCurrentItem().getType() == Material.valueOf(teamItemInfo[0])) {
 	           	 e.setCancelled(true);
-	           	 e.getWhoClicked().getItemOnCursor().setAmount(0);;
+	           	new teamCMD((Player) e.getWhoClicked());
+	           	 e.getWhoClicked().getItemOnCursor().setAmount(0);
 	            }
 	       	 
-	        }			
+	        }	
+	    	String[] kitItemInfo = plugin.getConfig().getConfigurationSection("kitChooseItem").getString("item").split(",");
+	    	if(e.getCurrentItem() == null) return;
+	        if (e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', kitItemInfo[2]))) {
+	            if(e.getCurrentItem().getType() == Material.valueOf(kitItemInfo[0])) {
+	           	 e.setCancelled(true);
+	           	 new kitsCMD((Player) e.getWhoClicked());
+	           	 e.getWhoClicked().getItemOnCursor().setAmount(0);
+	            }
+	       	 
+	        }	
 		}
-		if (e.getView().getTitle().equals(ChatColor.translateAlternateColorCodes('&', chooseKit.getString("title")))) {
+		if (e.getView().getTitle().contains(ChatColor.translateAlternateColorCodes('&', chooseKit.getString("title")))) {
+			e.setCancelled(true);
 		    final ItemStack clickedItem = e.getCurrentItem();
 		    if (clickedItem == null || clickedItem.getType().isAir()) return;	
 		    final Player player = (Player) e.getWhoClicked();
@@ -83,7 +98,8 @@ public class onInvClick implements Listener {
 					}
 	    			Main.data = configManager.getData();
 	    			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eYou selected the kit " + item.getString("kit")));
-	        	       	
+		    		new GUIManager(player).initializeKitsGUI(new TeamGUI(player).getInventory());
+		    		new GUIManager(player).openInventory(player, new KitsGUI(player).getInventory());    	       	
 		         	
 		         	
 		         	
@@ -218,7 +234,7 @@ public class onInvClick implements Listener {
 			    			player.sendMessage("Team full");
 			    			return;
 			    		}	
-			    		if(newTeam.size() + 1 > CastleTeam.getMembers("team2").size()) {
+			    		if(newTeam.size() + 1 > CastleTeam.getMembers("team1").size()) {
 			    			player.sendMessage("Teams are not balanced");
 			    			return;
 			    		}

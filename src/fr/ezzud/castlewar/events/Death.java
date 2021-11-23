@@ -28,9 +28,9 @@ public class Death implements Listener {
 	   @EventHandler
 	   public void onPlayerKill(EntityDamageByEntityEvent e)
 	   {
+		   if(GameStateManager.getGameState() == false) return;
 		   if (e.getEntity() instanceof Player) {
 			   Player victim = (Player) e.getEntity();
-			   Player killer = (Player) e.getDamager();
 			   
 			   if(victim.getHealth() - e.getDamage() < 1) {
 				   e.setCancelled(true);
@@ -45,7 +45,7 @@ public class Death implements Listener {
 				    		  player.setPlayerListName(ChatColor.RESET + player.getName());
 				    	  });
 					   if(e.getDamager() instanceof Player) {
-						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', killer.getName() + " &ehas killed the enemy king"));
+						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', e.getDamager().getName() + " &ehas killed the enemy king"));
 					   } else {
 						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eThe king of team 1 died"));
 					   }
@@ -61,7 +61,7 @@ public class Death implements Listener {
 				    		  player.setPlayerListName(ChatColor.RESET + player.getName());
 				    	  });
 					   if(e.getDamager() instanceof Player) {
-						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', killer.getName() + " &ehas killed the enemy king"));
+						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', e.getDamager().getName() + " &ehas killed the enemy king"));
 					   } else {
 						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eThe king of team 2 died"));
 					   }

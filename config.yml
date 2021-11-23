@@ -5,7 +5,16 @@ minPlayers: 2
 maxPlayers: 20
 spawnGamemode: ADVENTURE
 
-teamChooseItem: BANNER,0,&eChoose your team
+teamChooseItem: 
+   enabled: true
+   item: BANNER,0,&eChoose your team
+   slot: 0
+ 
+kitChooseItem: 
+   enabled: true
+   item: BOW,0,&eChoose your kit 
+   slot: 1 
+   
 lobby_spawnpoint: 0,80,0,10,10,world
 
 team1:

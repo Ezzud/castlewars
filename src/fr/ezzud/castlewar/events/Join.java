@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +30,7 @@ public class Join implements Listener {
     	e.setJoinMessage(null);
         	if(GameStateManager.getGameState() == false) {
         		Player player = e.getPlayer();
-        		String[] itemInfo = plugin.getConfig().getString("teamChooseItem").split(",");
+        		
         		String[] coordsStr = plugin.getConfig().getString("lobby_spawnpoint").split(",");
         		Location coords = new Location(Bukkit.getWorld(coordsStr[5]), Double.parseDouble(coordsStr[0]), Double.parseDouble(coordsStr[1]), Double.parseDouble(coordsStr[2]), Float.parseFloat(coordsStr[3]), Float.parseFloat(coordsStr[4]));
             	for (Object cItem : player.getActivePotionEffects()) {
@@ -46,12 +47,28 @@ public class Join implements Listener {
   			   	player.setLevel(0);
   			   	player.setExp(0);
   			   	player.setGameMode(GameMode.valueOf(plugin.getConfig().getString("spawnGamemode")));
-        		final ItemStack item = new ItemStack(Material.valueOf(itemInfo[0]), 1, Byte.parseByte(itemInfo[1]));
-                final ItemMeta meta = item.getItemMeta();
-                
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemInfo[2]));
-                item.setItemMeta(meta);
-        		player.getInventory().setItem(0, item);
+  			   	
+  			   	
+  			   	ConfigurationSection teamItem = plugin.getConfig().getConfigurationSection("teamChooseItem");
+  			   	if(teamItem.getBoolean("enabled") == true) {
+  	  			   	String[] itemInfo = teamItem.getString("item").split(",");
+  	        		final ItemStack item = new ItemStack(Material.valueOf(itemInfo[0]), 1, Byte.parseByte(itemInfo[1]));
+  	                final ItemMeta meta = item.getItemMeta();     
+  	                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemInfo[2]));
+  	                item.setItemMeta(meta);
+  	        		player.getInventory().setItem(teamItem.getInt("slot"), item);			   		
+  			   	}
+
+  			   	
+  			   	ConfigurationSection kitItem = plugin.getConfig().getConfigurationSection("kitChooseItem");
+  			   	if(kitItem.getBoolean("enabled") == true) {
+  	  			   	String[] itemInfo = kitItem.getString("item").split(",");
+  	        		final ItemStack item = new ItemStack(Material.valueOf(itemInfo[0]), 1, Byte.parseByte(itemInfo[1]));
+  	                final ItemMeta meta = item.getItemMeta();     
+  	                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemInfo[2]));
+  	                item.setItemMeta(meta);
+  	        		player.getInventory().setItem(kitItem.getInt("slot"), item);			   		
+  			   	}
         		
         		if(Bukkit.getOnlinePlayers().size() >= plugin.getConfig().getInt("minPlayers")) {
   		    	  CountdownTimer timer = new CountdownTimer(plugin,
