@@ -16,7 +16,7 @@ public class KitsGUI {
 	private final Inventory inv;
 	private Inventory inventory;
 	YamlConfiguration guis = configManager.getGUIs();
-	ConfigurationSection chooseTeam = guis.getConfigurationSection("chooseTeam");
+	ConfigurationSection chooseTeam = guis.getConfigurationSection("chooseKit");
     public KitsGUI(Player player) {  
         inv = Bukkit.createInventory(null, chooseTeam.getInt("rows") * 9, ChatColor.translateAlternateColorCodes('&', chooseTeam.getString("title")));
         new GUIManager(player).initializeKitsGUI(inv);

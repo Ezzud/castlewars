@@ -1,5 +1,9 @@
 package fr.ezzud.castlewar;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,6 +23,7 @@ import fr.ezzud.castlewar.events.Leave;
 import fr.ezzud.castlewar.events.onInvClick;
 import fr.ezzud.castlewar.events.onInvDrag;
 import fr.ezzud.castlewar.methods.configManager;
+import fr.ezzud.castlewar.methods.worldManager;
 
 public class Main extends JavaPlugin implements Listener {
 	  private static Main plugin;
@@ -75,5 +80,18 @@ public class Main extends JavaPlugin implements Listener {
 		pm.registerEvents(new Death(this), this);
 		this.getCommand("castlewar").setExecutor(new CommandHandler());
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &aSuccessfully loaded plugin!"));
+	}
+	
+	
+	@Override
+	public void onDisable() {
+		worldManager.unloadWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"));
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &cSuccessfully unloaded plugin!"));
+		try {
+			Path path = Paths.get(plugin.getConfig().getString("game_world") + "-castlewar");
+			worldManager.deleteDirectoryStream(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

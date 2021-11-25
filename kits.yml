@@ -1,68 +1,70 @@
 king:
    items:
-      "0":
-         id: "272"
+      0:
+         material: STONE_SWORD:0
          quantity: 1
-         name: "Stone Sword"
+         name: Stone Sword
          enchantments:
-               - DAMAGE_ALL,1
+            - DAMAGE_ALL,1
    effects:
       - SPEED,10,1
    armor:
       helmet: 
-            id: 306
-            name: "Cool Helmet"
+            material: LEATHER_HELMET:0
+            name: Cool Helmet
             enchantments:
-               - PROTECTION_ENVIRONMENTAL, 1
+               - PROTECTION_ENVIRONMENTAL,1
       chestplate: 
-            id: 307
-            name: "Cool Chestplate"
+            material: LEATHER_CHESTPLATE:0
+            name: Cool Chestplate
             enchantments:
-               - PROTECTION_ENVIRONMENTAL, 1
+               - PROTECTION_ENVIRONMENTAL,1
       leggings: 
-            id: 308
-            name: "Cool Leggings"
+            material: LEATHER_LEGGINGS:0
+            name: Cool Leggings
             enchantments:
-               - PROTECTION_ENVIRONMENTAL, 1
+               - PROTECTION_ENVIRONMENTAL,1
       boots: 
-            id: 309
-            name: "Cool Boots"
+            material: LEATHER_BOOTS:0
+            name: Cool Boots
             enchantments:
-               - PROTECTION_ENVIRONMENTAL, 1
+               - PROTECTION_ENVIRONMENTAL,1
 
 
 kits:
    knight:
-      name: "Knight"
-      permission: 'castle.kits.knight'
-      description: "Knight kit"
+      name: Knight
+      permission: castle.kits.knight
+      description: Knight kit
       effects:
          - SPEED,10,1
-      items:
-         "0":
-            id: "272"
-            quantity: 1
-            name: "Stone Sword"
+   items:
+      0:
+         material: STONE_SWORD:0
+         quantity: 1
+         name: Stone Sword
+         enchantments:
+            - DAMAGE_ALL,1
+   effects:
+      - SPEED,10,1
+   armor:
+      helmet: 
+            material: LEATHER_HELMET:0
+            name: Cool Helmet
             enchantments:
-               - DAMAGE_ALL,1
-      armor:
-         helmet: 
-               id: 306
-               name: "Cool Helmet"
-               enchantments:
-                  - PROTECTION_ENVIRONMENTAL, 1
-         chestplate: 
-               id: 307
-               name: "Cool Chestplate"
-               enchantments:
-                  - PROTECTION_ENVIRONMENTAL, 1
-         leggings: 
-               id: 308
-               name: "Cool Leggings"
-               enchantments:
-                  - PROTECTION_ENVIRONMENTAL, 1
-         boots: 
-               id: 309
-               name: "Cool Boots"
-               enchantments:
-                  - PROTECTION_ENVIRONMENTAL, 1
+               - PROTECTION_ENVIRONMENTAL,1
+      chestplate: 
+            material: LEATHER_CHESTPLATE:0
+            name: Cool Chestplate
+            enchantments:
+               - PROTECTION_ENVIRONMENTAL,1
+      leggings: 
+            material: LEATHER_LEGGINGS:0
+            name: Cool Leggings
+            enchantments:
+               - PROTECTION_ENVIRONMENTAL,1
+      boots: 
+            material: LEATHER_BOOTS:0
+            name: Cool Boots
+            enchantments:
+               - PROTECTION_ENVIRONMENTAL,1

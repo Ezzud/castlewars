@@ -73,6 +73,10 @@ public class onInvClick implements Listener {
 		    for(int i = 0; i < items.getKeys(false).size(); i++) {
 		    	 ConfigurationSection item = items.getConfigurationSection(String.valueOf(i));
 		    	 if(clickedItem.getItemMeta().getDisplayName().contains(ChatColor.translateAlternateColorCodes('&', item.getString("item").split(",")[2]))) {
+		    		 if(kits.getConfigurationSection("kits." + item.getString("kit")) == null) {
+			        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cKit does not exists!"));
+			        		return;	 
+		    		 }
 		         	String permission = kits.getConfigurationSection("kits." + item.getString("kit")).getString("permission");
 		        	if(data.getString(String.valueOf(player.getUniqueId())) == null) {
 						data.set(String.valueOf(player.getUniqueId()), plugin.getConfig().getString("default_kit"));

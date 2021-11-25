@@ -5,6 +5,10 @@ minPlayers: 2
 maxPlayers: 20
 spawnGamemode: ADVENTURE
 
+chatFormat:
+   enabled: true
+   format: "%teamcolor%%teamname% %player%&f: %message%"
+
 teamChooseItem: 
    enabled: true
    item: BANNER,0,&eChoose your team
@@ -16,18 +20,21 @@ kitChooseItem:
    slot: 1 
    
 lobby_spawnpoint: 0,80,0,10,10,world
+spectator_spawnpoint: 0,80,-100,10,10
+
+game_world: world
 
 team1:
    name: "Blue"
    color: "&9"
-   soldier_spawnpoint: 0,80,-100,10,10,world
-   king_spawnpoint: 0,80,-100,10,10,world
+   soldier_spawnpoint: 0,80,-100,10,10
+   king_spawnpoint: 0,80,-100,10,10
    
 team2:
    name: "Red"
    color: "&c"
-   soldier_spawnpoint: 0,80,-100,10,10,world
-   king_spawnpoint: 0,80,-100,10,10,world
+   soldier_spawnpoint: 0,80,-100,10,10
+   king_spawnpoint: 0,80,-100,10,10
    
 rankType: "suffix"   
 soldier_rank: "&7"
