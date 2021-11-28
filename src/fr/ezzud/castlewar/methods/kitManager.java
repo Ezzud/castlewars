@@ -93,7 +93,20 @@ public class kitManager {
 	
 	@SuppressWarnings("deprecation")
 	public void setPlayerKit(Player player) {
-		if(kits.getConfigurationSection("kits." + kitData.getString(String.valueOf(player.getUniqueId()))) == null) {
+		String kitName = null;
+		if(kitData.getString(String.valueOf(player.getUniqueId())) == null) {
+			kitName = plugin.getConfig().getString("default_kit");
+			kitData.set(String.valueOf(player.getUniqueId()), kitName);
+			try {
+				kitData.save(new File("plugins/CastleWars/data.yml"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			Main.data = configManager.getData();
+		} else {
+			kitName = kitData.getString(String.valueOf(player.getUniqueId()));
+		}
+		if(kits.getConfigurationSection("kits." + kitName) == null) {
 			kitData.set(String.valueOf(player.getUniqueId()), plugin.getConfig().getString("default_kit"));
 			try {
 				kitData.save(new File("plugins/CastleWars/data.yml"));
@@ -102,7 +115,7 @@ public class kitManager {
 			}
 			Main.data = configManager.getData();
 		}
-		ConfigurationSection kingKit = kits.getConfigurationSection("kits." + kitData.getString(String.valueOf(player.getUniqueId())));
+		ConfigurationSection kingKit = kits.getConfigurationSection("kits." + kitName);
 		ConfigurationSection items = kingKit.getConfigurationSection("items");
 		int itemNum = items.getKeys(false).size();
 		for(int g = 0; g < itemNum; g++) {

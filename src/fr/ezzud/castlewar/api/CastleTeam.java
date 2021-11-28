@@ -1,9 +1,12 @@
 package fr.ezzud.castlewar.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import fr.ezzud.castlewar.Main;
 
@@ -13,13 +16,15 @@ public class CastleTeam {
 	private String color;
 	private String soldier_spawnpoint;
 	private String king_spawnpoint;
+	private String prefix;
 	static Main plugin = Main.getInstance();
 	static YamlConfiguration teamMembers = Main.teams;
 	
 	public CastleTeam(String team) {
-		this.team = (ConfigurationSection) plugin.getConfig().getConfigurationSection(team);
+		this.team = plugin.getConfig().getConfigurationSection(team);
 		this.name = this.team.getString("name");
 		this.color = this.team.getString("color");
+		this.prefix = this.team.getString("prefix");
 		this.soldier_spawnpoint = this.team.getString("soldier_spawnpoint");
 		this.king_spawnpoint = this.team.getString("king_spawnpoint");
 	}
@@ -32,6 +37,10 @@ public class CastleTeam {
 		return this.color;
 	}
 	
+	public String getPrefix() {
+		return this.prefix;
+	}
+	
 	public String getSoldierSpawnPoint() {
 		return this.soldier_spawnpoint;
 	}
@@ -41,11 +50,13 @@ public class CastleTeam {
 	}
 
 	public static List<String> getMembers(String team) {
-		if(teamMembers.get(team) != null) {
-			return teamMembers.getStringList(team);
-		} else {
-			return null;
-		}		
+		Scoreboard board = Main.board;
+		Team tm = board.getTeam(team);
+		List<String> list = new ArrayList<>();
+		for(String pl : tm.getEntries()) {
+			list.add(pl);
+		}
+		return list;
 	}
 	
 }

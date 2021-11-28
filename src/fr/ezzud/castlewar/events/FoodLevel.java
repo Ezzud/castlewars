@@ -20,6 +20,10 @@ public class FoodLevel implements Listener {
 		   if (event.getEntity() instanceof Player) {
 			   if(GameStateManager.getGameState() == false) {
 				   event.setCancelled(true);
+			   } else {
+				   if(plugin.getConfig().getConfigurationSection("gameRules").getBoolean("foodLoss") == false) {
+					   event.setCancelled(true);  
+				   }
 			   }
 		   }
 	   }   

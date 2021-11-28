@@ -5,6 +5,18 @@ minPlayers: 2
 maxPlayers: 20
 spawnGamemode: ADVENTURE
 
+gameRules:
+   allowBuild: true
+   allowBreak: true
+   foodLoss: false
+   explosions: true
+
+
+kingConfig:
+   particlesEnabled: true
+   particles: NOTE
+   glowingEnabled: true
+
 chatFormat:
    enabled: true
    format: "%teamcolor%%teamname% %player%&f: %message%"
@@ -19,20 +31,22 @@ kitChooseItem:
    item: BOW,0,&eChoose your kit 
    slot: 1 
    
-lobby_spawnpoint: 0,80,0,10,10,world
+lobby_spawnpoint: 0,80,0,10,10
 spectator_spawnpoint: 0,80,-100,10,10
 
-game_world: world
+game_world: "world"
 
 team1:
    name: "Blue"
    color: "&9"
+   prefix: "&9BLUE &7"
    soldier_spawnpoint: 0,80,-100,10,10
    king_spawnpoint: 0,80,-100,10,10
    
 team2:
    name: "Red"
    color: "&c"
+   prefix: "&cRED &7"
    soldier_spawnpoint: 0,80,-100,10,10
    king_spawnpoint: 0,80,-100,10,10
    

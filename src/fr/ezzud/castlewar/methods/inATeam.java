@@ -1,24 +1,31 @@
 package fr.ezzud.castlewar.methods;
 
 
-import java.util.List;
+import java.util.Set;
 
-import fr.ezzud.castlewar.api.CastleTeam;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
+
+import fr.ezzud.castlewar.Main;
 import fr.ezzud.castlewar.api.GameStateManager;
 public class inATeam {
+	static Scoreboard board = Main.board;
+	static Main plugin = Main.getInstance();
 	public static boolean checkTeam(String player) {
-		
-		if(CastleTeam.getMembers("team1") != null) {
-			List<String> team1Members = CastleTeam.getMembers("team1");
+
+		Team team1 = board.getTeam("team1");
+		Team team2 = board.getTeam("team2");
+		if(team1.getEntries() != null) {
+			Set<String> team1Members = team1.getEntries() ;
 			if(team1Members.contains(player)) {
 				return true;
 			}			
 		}
-		if(CastleTeam.getMembers("team2") != null) {
-			List<String> team2Members = CastleTeam.getMembers("team2");
+		if(team2.getEntries() != null) {
+			Set<String> team2Members = team2.getEntries() ;
 			if(team2Members.contains(player)) {
 				return true;
-			}		
+			}			
 		}
 
 		
@@ -26,9 +33,10 @@ public class inATeam {
 	}
 	
 	public static boolean checkSpecificTeam(String player, String team) {
-		if(CastleTeam.getMembers(team) != null) {
-			List<String> teamMembers = CastleTeam.getMembers(team);
-			if(teamMembers.contains(player)) {
+		Team team1 = board.getTeam(team);
+		if(team1.getEntries() != null) {
+			Set<String> team1Members = team1.getEntries() ;
+			if(team1Members.contains(player)) {
 				return true;
 			} else {
 				return false;
@@ -40,17 +48,20 @@ public class inATeam {
 	
 	
 	public static String whichTeam(String player) {
-		if(CastleTeam.getMembers("team1") != null) {
-			List<String> team1Members = CastleTeam.getMembers("team1");
+		Scoreboard board = Main.board;
+		Team team1 = board.getTeam("team1");
+		Team team2 = board.getTeam("team2");
+		if(team1.getEntries() != null) {
+			Set<String> team1Members = team1.getEntries() ;
 			if(team1Members.contains(player)) {
 				return "team1";
 			}			
 		}
-		if(CastleTeam.getMembers("team2") != null) {
-			List<String> team2Members = CastleTeam.getMembers("team2");
+		if(team2.getEntries() != null) {
+			Set<String> team2Members = team2.getEntries() ;
 			if(team2Members.contains(player)) {
 				return "team2";
-			}		
+			}			
 		}
 
 		

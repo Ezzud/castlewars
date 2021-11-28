@@ -1,5 +1,6 @@
 package fr.ezzud.castlewar;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,8 +11,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import fr.ezzud.castlewar.api.GameStateManager;
+import fr.ezzud.castlewar.api.TeamManager;
 import fr.ezzud.castlewar.commands.CommandHandler;
 import fr.ezzud.castlewar.events.Damage;
 import fr.ezzud.castlewar.events.Death;
@@ -31,6 +35,9 @@ public class Main extends JavaPlugin implements Listener {
 	  public static YamlConfiguration kits;
 	  public static YamlConfiguration guis;
 	  public static YamlConfiguration data;
+	  public static ScoreboardManager manager;
+	  public static Scoreboard board;
+	  public static boolean starting;
 	   public static Main getInstance() {
 		      return plugin;
 	   }
@@ -53,14 +60,16 @@ public class Main extends JavaPlugin implements Listener {
 	public void onEnable() {
 		GameStateManager.GameState = false;
 		plugin = this;
+		starting = false;
+		manager = plugin.getServer().getScoreboardManager();
+		board = manager.getMainScoreboard();
 		this.saveDefaultConfig();
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bconfig.yml &aloaded"));
 		configManager.saveKits();
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bkits.yml &aloaded"));
 		kits = configManager.getKits();
-		configManager.saveForceTeams();
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bteams.yml &aloaded"));
-		teams = configManager.getTeams();
+		new TeamManager().initializeTeams();
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bTeams &aloaded"));
 		configManager.saveGUIs();
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bguis.yml &aloaded"));
 		guis = configManager.getGUIs();
@@ -72,26 +81,38 @@ public class Main extends JavaPlugin implements Listener {
 		pm.registerEvents(new onInvClick(this), this);
 		pm.registerEvents(new onInvDrag(this), this);
 		pm.registerEvents(new Join(this), this);
+		pm.registerEvents(new Leave(this), this);
 		pm.registerEvents(new Interaction(this), this);
 		pm.registerEvents(new Drop(this), this);
 		pm.registerEvents(new Damage(this), this);
 		pm.registerEvents(new FoodLevel(this), this);
-		pm.registerEvents(new Leave(this), this);
 		pm.registerEvents(new Death(this), this);
 		this.getCommand("castlewar").setExecutor(new CommandHandler());
+		File f = new File(plugin.getConfig().getString("game_world") + "-castlewar");
+		if(!f.exists()) {
+			worldManager.copyWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world")), plugin.getConfig().getString("game_world") + "-castlewar");
+		}
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &aSuccessfully loaded plugin!"));
+		if(Bukkit.getOnlinePlayers() != null && Bukkit.getOnlinePlayers().size() > 0) {
+			new GameStateManager().stopGame();
+		}
+		new GameStateManager().checkStart();
 	}
 	
 	
 	@Override
 	public void onDisable() {
-		worldManager.unloadWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"));
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &cSuccessfully unloaded plugin!"));
-		try {
-			Path path = Paths.get(plugin.getConfig().getString("game_world") + "-castlewar");
-			worldManager.deleteDirectoryStream(path);
-		} catch (IOException e) {
-			e.printStackTrace();
+		File f = new File(plugin.getConfig().getString("game_world") + "-castlewar");
+		if(f.exists()) {
+			worldManager.unloadWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"));
+			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &cSuccessfully unloaded plugin!"));
+			try {
+				Path path = Paths.get(plugin.getConfig().getString("game_world") + "-castlewar");
+				worldManager.deleteDirectoryStream(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}		
 		}
+
 	}
 }

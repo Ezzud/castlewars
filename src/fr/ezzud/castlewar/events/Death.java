@@ -36,6 +36,7 @@ public class Death implements Listener {
 				   e.setCancelled(true);
 				   if(victim.getName().equalsIgnoreCase(GameStateManager.team1King)) {
 					   GameStateManager.GameState = false;
+					   GameStateManager.createParticles = false;
 				    	  ArrayList<?> list2 = new ArrayList<>(Bukkit.getOnlinePlayers());
 				    	  list2.forEach((p) -> {
 				    		  Player player = ((Player) p);
@@ -50,6 +51,26 @@ public class Death implements Listener {
 						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eThe king of team 1 died"));
 					   }
 					   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eVictory of team 2"));
+		  		    	  CountdownTimer timer = new CountdownTimer(plugin,
+				    		        10,
+				    		        () ->  {
+				    		        	Bukkit.broadcastMessage("Redémarrage dans 10 secondes!");
+				    		        },
+				    		        () -> {    
+				    		        	CountdownTimer.cancelTimer();
+				    		        	new GameStateManager().stopGame();
+				    		        	new GameStateManager().checkStart();
+				    		        	
+	    		        	
+				    		        },
+				    		        (t) -> {
+				    		        	for(Player p : Bukkit.getOnlinePlayers()) {
+				    		        		p.setLevel(t.getSecondsLeft());
+				    		        	}
+				    		        }
+
+				    		);
+				    	  timer.scheduleTimer();
 				   } else if(victim.getName().equalsIgnoreCase(GameStateManager.team2King)) {
 					   GameStateManager.GameState = false;
 				    	  ArrayList<?> list2 = new ArrayList<>(Bukkit.getOnlinePlayers());
@@ -66,6 +87,26 @@ public class Death implements Listener {
 						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eThe king of team 2 died"));
 					   }
 					   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eVictory of team 1"));
+		  		    	  CountdownTimer timer = new CountdownTimer(plugin,
+				    		        10,
+				    		        () ->  {
+				    		        	Bukkit.broadcastMessage("Redémarrage dans 10 secondes!");
+				    		        },
+				    		        () -> {   
+				    		        	CountdownTimer.cancelTimer();
+				    		        	new GameStateManager().stopGame();
+				    		        	new GameStateManager().checkStart();
+				    		        	
+	    		        	
+				    		        },
+				    		        (t) -> {
+				    		        	for(Player p : Bukkit.getOnlinePlayers()) {
+				    		        		p.setLevel(t.getSecondsLeft());
+				    		        	}
+				    		        }
+
+				    		);
+				    	  timer.scheduleTimer();
 				   } else {
 					   victim.setGameMode(GameMode.SPECTATOR);
 						ConfigurationSection team1Config = plugin.getConfig().getConfigurationSection("team1");
@@ -80,12 +121,15 @@ public class Death implements Listener {
 				    		        	victim.setGameMode(GameMode.SURVIVAL);
 				    					if(inATeam.whichTeam(victim.getName()).equalsIgnoreCase("team1")) {
 				    						String[] coords = team1Config.getString("soldier_spawnpoint").split(",");
-				    						Location loc = new Location(Bukkit.getWorld(coords[5]), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
+				    						Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 				    						victim.teleport(loc);
+				    						victim.setHealth(20.0);
+				    						
 				    					} else if(inATeam.whichTeam(victim.getName()).equalsIgnoreCase("team2")) {
 				    						String[] coords = team2Config.getString("soldier_spawnpoint").split(",");
-				    						Location loc = new Location(Bukkit.getWorld(coords[5]), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
+				    						Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 				    						victim.teleport(loc);
+				    						victim.setHealth(20.0);
 				    					}
 	    		        	
 				    		        },

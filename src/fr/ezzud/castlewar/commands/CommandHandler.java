@@ -9,6 +9,10 @@ import org.bukkit.entity.Player;
 import fr.ezzud.castlewar.Main;
 import fr.ezzud.castlewar.api.GameStateManager;
 import fr.ezzud.castlewar.commands.admin.reloadCMD;
+import fr.ezzud.castlewar.commands.admin.setLobbyCMD;
+import fr.ezzud.castlewar.commands.admin.setSpawnCMD;
+import fr.ezzud.castlewar.commands.admin.startCMD;
+import fr.ezzud.castlewar.commands.admin.stopCMD;
 import fr.ezzud.castlewar.commands.players.kitsCMD;
 import fr.ezzud.castlewar.commands.players.teamCMD;
 import fr.ezzud.castlewar.methods.inATeam;
@@ -36,6 +40,18 @@ public class CommandHandler implements CommandExecutor {
 	   				new kitsCMD(player);
 	   			}
 	   			
+	   			break;
+	   		case "start":
+	   			new startCMD(player);
+	   			break;
+	   		case "stop":
+	   			new stopCMD(player);
+	   			break;
+	   		case "setspawn":
+	   			new setSpawnCMD(player, args);
+	   			break;
+	   		case "setlobby":
+	   			new setLobbyCMD(player);
 	   			break;
 	   		default:
 	   			sender.sendMessage("No command");

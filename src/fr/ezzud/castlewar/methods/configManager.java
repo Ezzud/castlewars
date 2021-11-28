@@ -17,16 +17,7 @@ public class configManager{
 	
 	public configManager() {
 	}
-	
-	public static void saveTeams() {
-		File f = new File("plugins/CastleWars/teams.yml");
-		if(!f.exists()) {
-			plugin.saveResource("teams.yml", false);
-		}
-	}	
-	public static void saveForceTeams() {
-		plugin.saveResource("teams.yml", true);
-	}		
+			
 	public static void saveKits() {
 		File f = new File("plugins/CastleWars/kits.yml");
 		if(!f.exists()) {
@@ -57,14 +48,6 @@ public class configManager{
 		return config;
 	}
 	
-	public static YamlConfiguration getTeams() {
-		saveTeams();
-		InputStream is = null;
-		try {is = new FileInputStream("plugins/CastleWars/teams.yml");} catch (FileNotFoundException e) {e.printStackTrace();}
-		Reader rd = new InputStreamReader(is);
-		YamlConfiguration config = YamlConfiguration.loadConfiguration(rd);
-		return config;
-	}
 	
 	public static YamlConfiguration getGUIs(){
 		saveGUIs();

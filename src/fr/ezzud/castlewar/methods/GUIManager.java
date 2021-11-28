@@ -7,15 +7,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.Scoreboard;
 
 import fr.ezzud.castlewar.Main;
-import fr.ezzud.castlewar.api.CastleTeam;
 import net.md_5.bungee.api.ChatColor;
 
 public class GUIManager {
@@ -27,7 +28,6 @@ public class GUIManager {
 	YamlConfiguration guis = Main.guis;
 	YamlConfiguration data = Main.data;
 	YamlConfiguration kits = Main.kits;
-	YamlConfiguration teams = Main.teams;
 	
 
 	public void initializeKitsGUI(Inventory inv) {
@@ -90,7 +90,9 @@ public class GUIManager {
 
         }
 	}
-    public void initializeTeamGUI(Inventory inv) {
+    @SuppressWarnings("deprecation")
+	public void initializeTeamGUI(Inventory inv) {
+    	Scoreboard board = Main.board;
     	ConfigurationSection team1Item = guis.getConfigurationSection("chooseTeam.chooseItems.team1");
     	ConfigurationSection team2Item = guis.getConfigurationSection("chooseTeam.chooseItems.team2");
     	ConfigurationSection noneItem = guis.getConfigurationSection("chooseTeam.chooseItems.none");
@@ -107,7 +109,10 @@ public class GUIManager {
     	
     	String[] team1Info = team1Item.getString("item").split(",");
     	   List<String> team1List = new ArrayList<String>();
-    	   List<String> team1Team = CastleTeam.getMembers("team1");
+    	   List<String> team1Team = new ArrayList<>();
+    	   for(OfflinePlayer pl : board.getTeam("team1").getPlayers()) {
+    		   team1Team.add(pl.getName());
+    	   }
      	   List<String> team11team = new ArrayList<String>();
     	   if(inATeam.checkSpecificTeam(player.getName(), "team1") == true) {
     		   team1List.add(ChatColor.translateAlternateColorCodes('&', "&cYou are already in this team"));
@@ -124,7 +129,7 @@ public class GUIManager {
      		   team11team.set(i, team1Team.get(i));
      	   }
      	   for(String i : team11team) {
-     		   if(!i.equals("0")) {
+     		   if(!i.equalsIgnoreCase("team1")) {
      	 		   if(i == "none") {
      	 			  team1List.add(ChatColor.translateAlternateColorCodes('&', "&e- ")); 
      	 		   } else {
@@ -144,7 +149,10 @@ public class GUIManager {
 
     	String[] team2Info = team2Item.getString("item").split(",");
  	   	List<String> team2List = new ArrayList<String>();
-  	   List<String> team2Team = CastleTeam.getMembers("team2");
+ 	   List<String> team2Team = new ArrayList<>();
+ 	   for(OfflinePlayer pl : board.getTeam("team2").getPlayers()) {
+ 		   team2Team.add(pl.getName());
+ 	   }
   	   List<String> team22team = new ArrayList<String>();
  	   if(inATeam.checkSpecificTeam(player.getName(), "team2") == true) {
 		   team2List.add(ChatColor.translateAlternateColorCodes('&', "&cYou are already in this team"));
@@ -161,7 +169,7 @@ public class GUIManager {
  		   team22team.set(i, team2Team.get(i));
  	   }
  	   for(String i : team22team) {
- 		   if(!i.equals("0")) {
+ 		   if(!i.equalsIgnoreCase("team2")) {
  	 		   if(i == "none") {
  	 			  team2List.add(ChatColor.translateAlternateColorCodes('&', "&e- ")); 
  	 		   } else {

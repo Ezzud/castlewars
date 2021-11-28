@@ -26,3 +26,24 @@ chooseTeam:
          position: 13
          lore:
          - "&aLine1"
+
+         
+chooseKit:
+   title: "&eChoose your kit"
+   rows: 3
+   replaceEmptyCaseBy: STAINED_GLASS_PANE,0,&r
+   items:
+      0:
+         item: BOOKSHELF,0,1,&dHow to play?
+         position: 4
+         lore: 
+            - "&fAs a &7Soldier&f, your objective is to kill the enemy &eKing"
+            - "&fYou have some kits that can help you"
+            - "&fAs a &eKing&f, you have to survive and kill the enemy &eKing"
+   chooseItems:
+      0: 
+         item: IRON_HELMET,0,&eKnight Kit
+         kit: knight
+         position: 12
+         lore:
+         - "&bLine1"

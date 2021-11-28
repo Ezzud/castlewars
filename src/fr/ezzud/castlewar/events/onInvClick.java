@@ -2,8 +2,10 @@ package fr.ezzud.castlewar.events;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,9 +15,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 
 import fr.ezzud.castlewar.Main;
-import fr.ezzud.castlewar.api.CastleTeam;
 import fr.ezzud.castlewar.api.TeamManager;
 import fr.ezzud.castlewar.commands.players.kitsCMD;
 import fr.ezzud.castlewar.commands.players.teamCMD;
@@ -31,7 +33,6 @@ public class onInvClick implements Listener {
 	YamlConfiguration guis = Main.guis;
 	YamlConfiguration data = Main.data;
 	YamlConfiguration kits = Main.kits;
-	YamlConfiguration team = Main.teams;
 	ConfigurationSection chooseTeam = guis.getConfigurationSection("chooseTeam");
 	ConfigurationSection chooseKit = guis.getConfigurationSection("chooseKit");
 	ConfigurationSection team1 = guis.getConfigurationSection("chooseTeam.chooseItems.team1");
@@ -111,6 +112,7 @@ public class onInvClick implements Listener {
 		    }
 		}
 	    if (e.getView().getTitle().equals(ChatColor.translateAlternateColorCodes('&', chooseTeam.getString("title")))) {
+	    	Scoreboard board = Main.board;
 		    e.setCancelled(true);
 		   	   int maxPlayer = plugin.getConfig().getInt("maxPlayers");
 		   	   if(maxPlayer % 2 == 1) {
@@ -126,67 +128,63 @@ public class onInvClick implements Listener {
 		    final Player player = (Player) e.getWhoClicked();
 		    if(clickedItem.getItemMeta().getDisplayName().contains(team1Item)) {
 		    	if(inATeam.checkTeam(player.getName()) == false) {
-		    		List<String> newTeam = CastleTeam.getMembers("team1");
+		    		List<String> newTeam = new ArrayList<>();
+		    		for(String pl : board.getTeam("team1").getEntries()) {
+		    			newTeam.add(pl);
+		    		}
 		    		if(newTeam.size() - 1 >= maxPlayer) {
 		    			player.sendMessage("Team full");
 		    			return;
 		    		}
-		    		if(newTeam.size() > CastleTeam.getMembers("team2").size()) {
+		    		if(newTeam.size() > board.getTeam("team2").getEntries().size()) {
 		    			player.sendMessage("Teams are not balanced");
 		    			return;
 		    		}
-		    		newTeam.add(player.getName());
-		    		team.set("team1", newTeam);
-		    		
-	    			try {
-						team.save(new File("plugins/CastleWars/teams.yml"));
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-		    		
-		    		Main.teams = configManager.getTeams();
+		    		TeamManager.addMemberToTeam(player, "team1");
 		    		
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 		    		player.sendMessage("Joined team 1!");
-		    		new GUIManager(player).initializeTeamGUI(new TeamGUI(player).getInventory());
-		    		new GUIManager(player).openInventory(player, new TeamGUI(player).getInventory());
+		    		for(Player p : Bukkit.getOnlinePlayers()) {
+		    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
+				    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
+				    		new GUIManager(p).openInventory(p, new TeamGUI(p).getInventory());
+		    			}
+		    		}
 		    			
 		    		
 		    	} else {
 		    		if(inATeam.checkSpecificTeam(player.getName(), "team1") == false) {
-
-			    		List<String> newTeam = team.getStringList("team1"); 
-			    		List<String> actualTeam = team.getStringList("team2"); 
-			    		
+ 
+			    		List<String> newTeam = new ArrayList<>();
+			    		for(String pl : board.getTeam("team1").getEntries()) {
+			    			newTeam.add(pl);
+			    		}
+			    		List<String> actualTeam = new ArrayList<>();
+			    		for(String pl : board.getTeam("team2").getEntries()) {
+			    			actualTeam.add(pl);
+			    		}
 			    		if(newTeam.size() - 1 >= maxPlayer) {
 			    			player.sendMessage("Team full");
 			    			return;
 			    		}	
-			    		if(newTeam.size() + 1 > CastleTeam.getMembers("team2").size()) {
+			    		if(newTeam.size() + 1 > board.getTeam("team2").getEntries().size()) {
 			    			player.sendMessage("Teams are not balanced");
 			    			return;
 			    		}
-			    		newTeam.add(player.getName());
-			    		team.set("team1", newTeam);
-			    		
-			    		actualTeam.remove(player.getName());
-			    		team.set("team2", actualTeam);
-
-		    			try {
-							team.save(new File("plugins/CastleWars/teams.yml"));
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-		    			
-			    		Main.teams = configManager.getTeams();
+			    		TeamManager.addMemberToTeam(player, "team1");
+			    		TeamManager.removeMemberFromTeam(player, "team2");
 			    		
 						player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 			    		
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 			    		player.sendMessage("Joined team 1!");
-			    		new GUIManager(player).initializeTeamGUI(new TeamGUI(player).getInventory());
-			    		new GUIManager(player).openInventory(player, new TeamGUI(player).getInventory());
+			    		for(Player p : Bukkit.getOnlinePlayers()) {
+			    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
+					    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
+					    		new GUIManager(p).openInventory(p, new TeamGUI(p).getInventory());
+			    			}
+			    		}
 		    		}
 		    	}
 		    	
@@ -202,93 +200,89 @@ public class onInvClick implements Listener {
 		    } else if(clickedItem.getItemMeta().getDisplayName().contains(team2Item)) {
 		    	if(inATeam.checkTeam(player.getName()) == false) {
 		    		
-		    		List<String> newTeam = team.getStringList("team2"); 
+		    		List<String> newTeam = new ArrayList<>();
+		    		for(String pl : board.getTeam("team2").getEntries()) {
+		    			newTeam.add(pl);
+		    		}
 		    		if(newTeam.size() - 1 >= maxPlayer) {
 		    			player.sendMessage("Team full");
 		    			return;
 		    		}
-		    		if(newTeam.size() > CastleTeam.getMembers("team1").size()) {
+		    		if(newTeam.size() > board.getTeam("team1").getEntries().size()) {
 		    			player.sendMessage("Teams are not balanced");
 		    			return;
 		    		}
 		    		
-		    		newTeam.add(player.getName());
-		    		team.set("team2", newTeam);
-		    		
-	    			try {
-						team.save(new File("plugins/CastleWars/teams.yml"));
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-		    		Main.teams = configManager.getTeams();
+		    		TeamManager.addMemberToTeam(player, "team2");
 		    		
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 		    		player.sendMessage("Joined team 2!");
-		    		new GUIManager(player).initializeTeamGUI(new TeamGUI(player).getInventory());
-		    		new GUIManager(player).openInventory(player, new TeamGUI(player).getInventory());
+		    		for(Player p : Bukkit.getOnlinePlayers()) {
+		    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
+				    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
+				    		new GUIManager(p).openInventory(p, new TeamGUI(p).getInventory());
+		    			}
+		    		}
 		    			
 		    		
 		    	} else {
 		    		if(inATeam.checkSpecificTeam(player.getName(), "team2") == false) {
-			    		List<String> newTeam = team.getStringList("team2"); 
-			    		List<String> actualTeam = team.getStringList("team1"); 
+			    		List<String> newTeam = new ArrayList<>();
+			    		for(String pl : board.getTeam("team2").getEntries()) {
+			    			newTeam.add(pl);
+			    		}
+			    		List<String> actualTeam = new ArrayList<>();
+			    		for(String pl : board.getTeam("team1").getEntries()) {
+			    			actualTeam.add(pl);
+			    		}
 			    		
 			    		if(newTeam.size() - 1 >= maxPlayer) {
 			    			player.sendMessage("Team full");
 			    			return;
 			    		}	
-			    		if(newTeam.size() + 1 > CastleTeam.getMembers("team1").size()) {
+			    		if(newTeam.size() + 1 > board.getTeam("team1").getEntries().size()) {
 			    			player.sendMessage("Teams are not balanced");
 			    			return;
 			    		}
-			    		newTeam.add(player.getName());
-			    		team.set("team2", newTeam);
-			    		
-			    		actualTeam.remove(player.getName());
-			    		team.set("team1", actualTeam);
-
-		    			try {
-							team.save(new File("plugins/CastleWars/teams.yml"));
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-		    			
-			    		Main.teams = configManager.getTeams();
+			    		TeamManager.addMemberToTeam(player, "team2");
+			    		TeamManager.removeMemberFromTeam(player, "team1");
 			    		
 						player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 			    		
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 			    		player.sendMessage("Joined team 2!");
-			    		new GUIManager(player).initializeTeamGUI(new TeamGUI(player).getInventory());
-			    		new GUIManager(player).openInventory(player, new TeamGUI(player).getInventory());
+			    		for(Player p : Bukkit.getOnlinePlayers()) {
+			    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
+					    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
+					    		new GUIManager(p).openInventory(p, new TeamGUI(p).getInventory());
+			    			}
+			    		}
 		    		}
 		    	}		    	
 		    } else if(clickedItem.getItemMeta().getDisplayName().contains(noneItem)) {
 		    	if(inATeam.checkTeam(player.getName()) == true) {
 		    		if(inATeam.checkSpecificTeam(player.getName(), "team1") == true) {
-			    		List<String> lst = team.getStringList("team1"); 
-			    		lst.remove(player.getName());
-			    		team.set("team1", lst);	
-		    			try {
-							team.save(new File("plugins/CastleWars/teams.yml"));
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+			    		List<String> actualTeam = new ArrayList<>();
+			    		for(String pl : board.getTeam("team1").getEntries()) {
+			    			actualTeam.add(pl);
+			    		}
+			    		TeamManager.removeMemberFromTeam(player, "team1");
 		    		} else if(inATeam.checkSpecificTeam(player.getName(), "team2") == true) {
-			    		List<String> lst = team.getStringList("team2"); 
-			    		lst.remove(player.getName());
-			    		team.set("team2", lst);	
-		    			try {
-							team.save(new File("plugins/CastleWars/teams.yml"));
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+			    		List<String> actualTeam = new ArrayList<>();
+			    		for(String pl : board.getTeam("team2").getEntries()) {
+			    			actualTeam.add(pl);
+			    		}
+			    		TeamManager.removeMemberFromTeam(player, "team2");
 		    		}
 		    		player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getName()));
 		    		player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getName()));
-		    		new GUIManager(player).initializeTeamGUI(new TeamGUI(player).getInventory());
-		    		new GUIManager(player).openInventory(player, new TeamGUI(player).getInventory());
+		    		for(Player p : Bukkit.getOnlinePlayers()) {
+		    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
+				    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
+				    		new GUIManager(p).openInventory(p, new TeamGUI(p).getInventory());
+		    			}
+		    		}
 		    	}
 		    }
 	    	
