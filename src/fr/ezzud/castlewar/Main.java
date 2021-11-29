@@ -17,6 +17,8 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import fr.ezzud.castlewar.api.GameStateManager;
 import fr.ezzud.castlewar.api.TeamManager;
 import fr.ezzud.castlewar.commands.CommandHandler;
+import fr.ezzud.castlewar.commands.TabCompletion;
+import fr.ezzud.castlewar.events.Chat;
 import fr.ezzud.castlewar.events.Damage;
 import fr.ezzud.castlewar.events.Death;
 import fr.ezzud.castlewar.events.Drop;
@@ -24,6 +26,7 @@ import fr.ezzud.castlewar.events.FoodLevel;
 import fr.ezzud.castlewar.events.Interaction;
 import fr.ezzud.castlewar.events.Join;
 import fr.ezzud.castlewar.events.Leave;
+import fr.ezzud.castlewar.events.PlaceBreak;
 import fr.ezzud.castlewar.events.onInvClick;
 import fr.ezzud.castlewar.events.onInvDrag;
 import fr.ezzud.castlewar.methods.configManager;
@@ -87,7 +90,10 @@ public class Main extends JavaPlugin implements Listener {
 		pm.registerEvents(new Damage(this), this);
 		pm.registerEvents(new FoodLevel(this), this);
 		pm.registerEvents(new Death(this), this);
+		pm.registerEvents(new Chat(this), this);
+		pm.registerEvents(new PlaceBreak(this), this);
 		this.getCommand("castlewar").setExecutor(new CommandHandler());
+		this.getCommand("castlewar").setTabCompleter(new TabCompletion());
 		File f = new File(plugin.getConfig().getString("game_world") + "-castlewar");
 		if(!f.exists()) {
 			worldManager.copyWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world")), plugin.getConfig().getString("game_world") + "-castlewar");

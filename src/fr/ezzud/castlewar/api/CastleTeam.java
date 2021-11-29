@@ -17,10 +17,12 @@ public class CastleTeam {
 	private String soldier_spawnpoint;
 	private String king_spawnpoint;
 	private String prefix;
+	private String ident;
 	static Main plugin = Main.getInstance();
 	static YamlConfiguration teamMembers = Main.teams;
 	
 	public CastleTeam(String team) {
+		this.ident = team;
 		this.team = plugin.getConfig().getConfigurationSection(team);
 		this.name = this.team.getString("name");
 		this.color = this.team.getString("color");
@@ -49,9 +51,9 @@ public class CastleTeam {
 		return this.king_spawnpoint;
 	}
 
-	public static List<String> getMembers(String team) {
+	public List<String> getMembers() {
 		Scoreboard board = Main.board;
-		Team tm = board.getTeam(team);
+		Team tm = board.getTeam(this.ident);
 		List<String> list = new ArrayList<>();
 		for(String pl : tm.getEntries()) {
 			list.add(pl);

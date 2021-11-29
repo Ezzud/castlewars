@@ -28,6 +28,7 @@ public class Death implements Listener {
 	   @EventHandler
 	   public void onPlayerKill(EntityDamageByEntityEvent e)
 	   {
+		   if(e.isCancelled() == true) return;
 		   if(GameStateManager.getGameState() == false) return;
 		   if (e.getEntity() instanceof Player) {
 			   Player victim = (Player) e.getEntity();

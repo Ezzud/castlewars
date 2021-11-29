@@ -16,6 +16,7 @@ public class Drop implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerDropItemEvent e) {
+    	if(e.isCancelled() == true) return;
         	String[] itemInfo = plugin.getConfig().getConfigurationSection("kitChooseItem").getString("item").split(",");
          if (e.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', itemInfo[2]))) {
              if(e.getItemDrop().getItemStack().getType() == Material.valueOf(itemInfo[0])) {
