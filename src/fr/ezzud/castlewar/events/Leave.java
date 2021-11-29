@@ -8,6 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.nametagedit.plugin.NametagEdit;
+
 import fr.ezzud.castlewar.Main;
 import fr.ezzud.castlewar.api.CastlePlayer;
 import fr.ezzud.castlewar.api.CastleTeam;
@@ -32,6 +34,10 @@ public class Leave implements Listener {
     		e.setQuitMessage(null);
     	}
     	Player player = e.getPlayer();
+    	Main.scoreboardManager.removeFromPlayerCache(player);
+    	if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+			NametagEdit.getApi().clearNametag(player);
+		}
     	if(GameStateManager.GameState == false) {
         	if(plugin.getConfig().getConfigurationSection("joinLeaveMessages").getBoolean("enabled") == true) {
         		String joinmsg = messagesFormatter.formatJoinMessage(plugin.getConfig().getConfigurationSection("joinLeaveMessages").getString("leave"), player, Bukkit.getOnlinePlayers().size() - 1);
@@ -43,10 +49,10 @@ public class Leave implements Listener {
     		if(GameStateManager.GameState == true) {
         		if(inATeam.isKing(player.getName()) == true) {
         			GameStateManager.createParticles = false;
-        			new GameStateManager().stopGame();
-        			CWendEvent event = new CWendEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()), "leave");
+        			CWendEvent event = new CWendEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.team1King), new CastlePlayer(GameStateManager.team2King), "leave");
 					Bukkit.getPluginManager().callEvent(event);	
-        			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("events.death.king").getString("leave"))));
+        			new GameStateManager().stopGame();
+        			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("events.death.king.message").getString("leave"))));
         		}  			
     		} else {
         		if(inATeam.checkSpecificTeam(player.getName(), "team1") == true) {

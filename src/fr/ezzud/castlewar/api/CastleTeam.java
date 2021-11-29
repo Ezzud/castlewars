@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -51,6 +52,14 @@ public class CastleTeam {
 		return this.king_spawnpoint;
 	}
 
+	public Player getKing() {
+		if(this.ident.equalsIgnoreCase("team1")) {
+			return GameStateManager.king1Player;
+		} else {
+			return GameStateManager.king2Player;
+		}
+	}
+	
 	public List<String> getMembers() {
 		Scoreboard board = Main.board;
 		Team tm = board.getTeam(this.ident);

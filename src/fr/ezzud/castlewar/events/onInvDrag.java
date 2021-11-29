@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
 import fr.ezzud.castlewar.Main;
-import fr.ezzud.castlewar.methods.configManager;
+import fr.ezzud.castlewar.methods.managers.configManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class onInvDrag implements Listener {

@@ -3,7 +3,6 @@ package fr.ezzud.castlewar.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -54,7 +53,6 @@ public class TabCompletion implements TabCompleter{
         			case "menu":
         				return null;
         			case "setspawn":
-        				Bukkit.getLogger().info("setspawn");
         				if(args.length < 3) {
             				List<String> setSpawnlist = new ArrayList<>();
             				setSpawnlist.add("team1");

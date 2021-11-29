@@ -24,6 +24,7 @@ public class Interaction implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_AIR) {
         	if(GameStateManager.getGameState() == true) return;
         	if(e.getPlayer().getItemInHand() == null) return;
+        	if(e.getPlayer().getItemInHand().getItemMeta() == null) return;
         	String[] teamItemInfo = plugin.getConfig().getConfigurationSection("teamChooseItem").getString("item").split(",");
         	String[] kitItemInfo = plugin.getConfig().getConfigurationSection("kitChooseItem").getString("item").split(",");
         	if (e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', teamItemInfo[2]))) {

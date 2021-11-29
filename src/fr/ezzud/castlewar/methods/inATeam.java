@@ -14,7 +14,9 @@ public class inATeam {
 	public static boolean checkTeam(String player) {
 
 		Team team1 = board.getTeam("team1");
+		if(team1 == null) return false;
 		Team team2 = board.getTeam("team2");
+		if(team2 == null) return false;
 		if(team1.getEntries() != null) {
 			Set<String> team1Members = team1.getEntries() ;
 			if(team1Members.contains(player)) {

@@ -26,10 +26,10 @@ import fr.ezzud.castlewar.commands.players.kitsCMD;
 import fr.ezzud.castlewar.commands.players.teamCMD;
 import fr.ezzud.castlewar.gui.KitsGUI;
 import fr.ezzud.castlewar.gui.TeamGUI;
-import fr.ezzud.castlewar.methods.GUIManager;
-import fr.ezzud.castlewar.methods.configManager;
 import fr.ezzud.castlewar.methods.inATeam;
 import fr.ezzud.castlewar.methods.messagesFormatter;
+import fr.ezzud.castlewar.methods.managers.GUIManager;
+import fr.ezzud.castlewar.methods.managers.configManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class onInvClick implements Listener {
@@ -51,6 +51,7 @@ public class onInvClick implements Listener {
 		if(!e.getWhoClicked().getGameMode().equals(GameMode.CREATIVE)) {
 	    	String[] teamItemInfo = plugin.getConfig().getConfigurationSection("teamChooseItem").getString("item").split(",");
 	    	if(e.getCurrentItem() == null) return;
+	    	if(e.getCurrentItem().getItemMeta() == null) return;
 	        if (e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', teamItemInfo[2]))) {
 	            if(e.getCurrentItem().getType() == Material.valueOf(teamItemInfo[0])) {
 	           	 e.setCancelled(true);
@@ -61,6 +62,7 @@ public class onInvClick implements Listener {
 	        }	
 	    	String[] kitItemInfo = plugin.getConfig().getConfigurationSection("kitChooseItem").getString("item").split(",");
 	    	if(e.getCurrentItem() == null) return;
+	    	if(e.getCurrentItem().getItemMeta() == null) return;
 	        if (e.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', kitItemInfo[2]))) {
 	            if(e.getCurrentItem().getType() == Material.valueOf(kitItemInfo[0])) {
 	           	 e.setCancelled(true);
@@ -80,7 +82,7 @@ public class onInvClick implements Listener {
 		    	 ConfigurationSection item = items.getConfigurationSection(String.valueOf(i));
 		    	 if(clickedItem.getItemMeta().getDisplayName().contains(ChatColor.translateAlternateColorCodes('&', item.getString("item").split(",")[2]))) {
 		    		 if(kits.getConfigurationSection("kits." + item.getString("kit")) == null) {
-			        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("notExist")));
+			        		player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("notExist"))));
 			        		return;	 
 		    		 }
 		         	String permission = kits.getConfigurationSection("kits." + item.getString("kit")).getString("permission");
@@ -100,10 +102,10 @@ public class onInvClick implements Listener {
 		    			Main.data = configManager.getData();
 		        	}
 		         	if (!player.hasPermission(permission) && !player.isOp()) {
-		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("noPermission")));
+		        		player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("noPermission"))));
 		        		return;
 		        	} else if(data.getString(String.valueOf(player.getUniqueId())).equalsIgnoreCase(item.getString("kit"))) {
-		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("alreadySelected")));
+		        		player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("alreadySelected"))));
 		        		return;
 		        	}
 					data.set(String.valueOf(player.getUniqueId()), item.getString("kit"));
@@ -113,7 +115,7 @@ public class onInvClick implements Listener {
 						e1.printStackTrace();
 					}
 	    			Main.data = configManager.getData();
-	    			player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("kitChange").replaceAll("%kitname%",item.getString("kit"))));
+	    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("kitChange").replaceAll("%kitname%",item.getString("kit")))));
         			CWkitChangeEvent event = new CWkitChangeEvent(new CastleKit(oldKit), new CastleKit(item.getString("kit")));
 					Bukkit.getPluginManager().callEvent(event);	
 	    			new GUIManager(player).initializeKitsGUI(new TeamGUI(player).getInventory());
@@ -186,8 +188,9 @@ public class onInvClick implements Listener {
 			    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("notBalanced"))));
 			    			return;
 			    		}
-			    		TeamManager.addMemberToTeam(player, "team1");
 			    		TeamManager.removeMemberFromTeam(player, "team2");
+			    		TeamManager.addMemberToTeam(player, "team1");
+			    		
 			    		
 						player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 			    		
@@ -261,8 +264,9 @@ public class onInvClick implements Listener {
 			    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("notBalanced"))));
 			    			return;
 			    		}
-			    		TeamManager.addMemberToTeam(player, "team2");
 			    		TeamManager.removeMemberFromTeam(player, "team1");
+			    		TeamManager.addMemberToTeam(player, "team2");
+			    		
 			    		
 						player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 			    		

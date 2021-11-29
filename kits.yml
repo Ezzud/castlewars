@@ -1,32 +1,59 @@
 king:
    items:
       0:
-         material: STONE_SWORD:0
+         material: IRON_SWORD:0
          quantity: 1
-         name: Stone Sword
+         name: "&eKing Weapon"
          enchantments:
             - DAMAGE_ALL,1
+      1:
+         material: BOW:0
+         quantity: 1
+         name: "&eKing Weapon"
+         enchantments:
+            - ARROW_INFINITE,1
+      2:
+         material: ARROW:0
+         quantity: 1
+         name: "Arrow"
+         enchantments:      
+      3:
+         material: IRON_PICKAXE:0
+         quantity: 1
+         name: "&eKing Tool"
+         enchantments:
+            - DIG_SPEED,1
+      4:
+         material: STONE:0
+         quantity: 64
+         name: Stone
+         enchantments:
+      5:
+         material: STONE:0
+         quantity: 64
+         name: Stone
+         enchantments:
    effects:
       - SPEED,10,1
    armor:
       helmet: 
-            material: LEATHER_HELMET:0
-            name: Cool Helmet
+            material: CHAINMAIL_HELMET:0
+            name: "&eKing Armor"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
       chestplate: 
-            material: LEATHER_CHESTPLATE:0
-            name: Cool Chestplate
+            material: CHAINMAIL_CHESTPLATE:0
+            name: "&eKing Armor"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
       leggings: 
-            material: LEATHER_LEGGINGS:0
-            name: Cool Leggings
+            material: CHAINMAIL_LEGGINGS:0
+            name: "&eKing Armor"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
       boots: 
-            material: LEATHER_BOOTS:0
-            name: Cool Boots
+            material: CHAINMAIL_BOOTS:0
+            name: "&eKing Armor"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
 
@@ -37,50 +64,54 @@ kits:
       permission: castle.kits.knight
       description: Knight kit
       effects:
-         - SPEED,10,1
       items:
          0:
             material: STONE_SWORD:0
             quantity: 1
-            name: Stone Sword
+            name: "&fStone Sword"
             enchantments:
                - DAMAGE_ALL,1
          1:
-            material: BOW:0
+            material: IRON_PICKAXE:0
             quantity: 1
-            name: Arc de fou
-            enchantments:  
+            name: "&eKing Tool"
+            enchantments:
+               - DIG_SPEED,1
          2:
-            material: ARROW:0
+            material: STONE:0
             quantity: 64
-            name: Fiouu
+            name: Stone
+            enchantments:
+         3:
+            material: STONE:0
+            quantity: 64
+            name: Stone
             enchantments:
       effects:
-        - SPEED,10,1
       armor:
          helmet: 
             material: LEATHER_HELMET:0
-            name: Cool Helmet
+            name: "&6Knight kit"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
          chestplate: 
-            material: LEATHER_CHESTPLATE:0
-            name: Cool Chestplate
+            material: CHAINMAIL_CHESTPLATE:0
+            name: "&6Knight kit"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
          leggings: 
-            material: LEATHER_LEGGINGS:0
-            name: Cool Leggings
+            material: CHAINMAIL_LEGGINGS:0
+            name: "&6Knight kit"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
          boots: 
             material: LEATHER_BOOTS:0
-            name: Cool Boots
+            name: "&6Knight kit"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
    archer:
       name: Archer
-      permission: castle.kits.knight
+      permission: castle.kits.archer
       description: Archer kit
       effects:
          - SPEED,10,1
@@ -88,39 +119,55 @@ kits:
          0:
             material: STONE_SWORD:0
             quantity: 1
-            name: Stone Sword
+            name: "&fStone Sword"
             enchantments:
-               - DAMAGE_ALL,1
          1:
             material: BOW:0
             quantity: 1
             name: Arc de fou
             enchantments:  
+               - ARROW_INFINITE,1
          2:
             material: ARROW:0
+            quantity: 1
+            name: Arrow
+            enchantments:
+         3:
+            material: IRON_PICKAXE:0
+            quantity: 1
+            name: "&eKing Tool"
+            enchantments:
+               - DIG_SPEED,1
+         4:
+            material: STONE:0
             quantity: 64
-            name: Fiouu
+            name: Stone
+            enchantments:
+         5:
+            material: STONE:0
+            quantity: 64
+            name: Stone
             enchantments:
       effects:
         - SPEED,10,1
       armor:
          helmet: 
             material: LEATHER_HELMET:0
-            name: Cool Helmet
+            name: "&6Knight kit"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
          chestplate: 
             material: LEATHER_CHESTPLATE:0
-            name: Cool Chestplate
+            name: "&6Knight kit"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
          leggings: 
             material: LEATHER_LEGGINGS:0
-            name: Cool Leggings
+            name: "&6Knight kit"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1
          boots: 
             material: LEATHER_BOOTS:0
-            name: Cool Boots
+            name: "&6Knight kit"
             enchantments:
                - PROTECTION_ENVIRONMENTAL,1

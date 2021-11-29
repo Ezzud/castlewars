@@ -12,7 +12,7 @@ public class setLobbyCMD {
 	static Main plugin = Main.getInstance();
 	YamlConfiguration messages = Main.messages;
 	public setLobbyCMD(Player player) {
-		if (player.hasPermission("castlewars.setspawn") || player.isOp()) {
+		if (player.hasPermission("castlewars.admin.setlobby") || player.isOp()) {
 			Location loc = player.getLocation();
 			String coords = String.valueOf(loc.getBlockX()) + "," + String.valueOf(loc.getBlockY()) + "," +  String.valueOf(loc.getBlockZ()) + "," +  String.valueOf(loc.getYaw() + "," +  String.valueOf(loc.getPitch()));
 			plugin.getConfig().set("lobby_spawnpoint", coords);

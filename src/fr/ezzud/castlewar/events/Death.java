@@ -1,6 +1,7 @@
 package fr.ezzud.castlewar.events;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,12 +22,13 @@ import fr.ezzud.castlewar.api.GameStateManager;
 import fr.ezzud.castlewar.api.TeamManager;
 import fr.ezzud.castlewar.api.events.CWKillEvent;
 import fr.ezzud.castlewar.api.events.CWendEvent;
-import fr.ezzud.castlewar.methods.CountdownTimer;
-import fr.ezzud.castlewar.methods.EndCountdownTimer;
-import fr.ezzud.castlewar.methods.FWCountdownTimer;
-import fr.ezzud.castlewar.methods.FWManager;
 import fr.ezzud.castlewar.methods.inATeam;
 import fr.ezzud.castlewar.methods.messagesFormatter;
+import fr.ezzud.castlewar.methods.countdowns.CountdownTimer;
+import fr.ezzud.castlewar.methods.countdowns.EndCountdownTimer;
+import fr.ezzud.castlewar.methods.countdowns.FWCountdownTimer;
+import fr.ezzud.castlewar.methods.managers.FWManager;
+import fr.ezzud.castlewar.methods.managers.kitManager;
 
 
 public class Death implements Listener {
@@ -72,6 +74,7 @@ public class Death implements Listener {
 					   }
 					   String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.death.king").getString("victoryMessage"), new CastleTeam("team2"));
 					   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+					   GameStateManager.GameStateText = "ending";
 					   if(plugin.getConfig().getConfigurationSection("gameRules").getBoolean("endFireworks") == true) {
 						   FWCountdownTimer FWtimer = new FWCountdownTimer(plugin,
 			  		    			6,
@@ -83,18 +86,36 @@ public class Death implements Listener {
 					    		        },
 					    		        (t) -> {
 					    		        	for(Player p : Bukkit.getOnlinePlayers()) {
-					    		        		if(inATeam.whichTeam(p.getName()).equalsIgnoreCase("team2") ) {
-							    		        	if(t.getSecondsLeft() % 2 == 0) {
-							    		        		ChatColor teamColor = ChatColor.getByChar(TeamManager.getTeam2().getColor().charAt(1));
-							    		        		FWManager.spawnFireworks(p.getLocation(), 1, FWManager.translateChatColorToColor(teamColor));
-							    		        	}
+					    		        		if(inATeam.checkTeam(p.getName()) == false) continue; 
+					    		        		if(inATeam.whichTeam(p.getName()) != null) {
+						    		        		if(inATeam.whichTeam(p.getName()).equalsIgnoreCase("team2") ) {
+								    		        	if(t.getSecondsLeft() % 2 == 0) {
+								    		        		ChatColor teamColor = ChatColor.getByChar(TeamManager.getTeam2().getColor().charAt(1));
+								    		        		FWManager.spawnFireworks(p.getLocation(), 1, FWManager.translateChatColorToColor(teamColor));
+								    		        	}
+						    		        		}				    		        			
 					    		        		}
+
 					    		        	}
 
 					    		        }
 
 					    		);
 			  		    	FWtimer.scheduleTimer();						   
+					   }
+					   List<String> winCommands = plugin.getConfig().getConfigurationSection("endCommands").getStringList("win");
+					   List<String> looseCommands = plugin.getConfig().getConfigurationSection("endCommands").getStringList("loose");
+					   for(Player p : Bukkit.getOnlinePlayers()) {
+						   if(inATeam.checkTeam(p.getName()) == false) continue;
+						   if(inATeam.whichTeam(p.getName()).equalsIgnoreCase("team2")) {
+							   for(String i : winCommands) {
+								 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), i.replaceAll("%player%", p.getName()));  
+							   }
+						   } else {
+							   for(String i : looseCommands) {
+								   Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), i.replaceAll("%player%", p.getName()));  
+							   }
+						   }
 					   }
 	        			CWendEvent event = new CWendEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()), "leave");
 						Bukkit.getPluginManager().callEvent(event);	
@@ -107,6 +128,9 @@ public class Death implements Listener {
 				    		        () -> {    
 				    		        	EndCountdownTimer.cancelTimer();
 				    		        	new GameStateManager().stopGame();
+				    		        	if(plugin.getConfig().getBoolean("stopServerAtEnd") == true) {
+				    		        		Bukkit.getServer().shutdown();
+				    		        	}
 				    		        	
 	    		        	
 				    		        },
@@ -141,6 +165,7 @@ public class Death implements Listener {
 						   }
 						   String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.death.king").getString("victoryMessage"), new CastleTeam("team1"));
 						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+						   GameStateManager.GameStateText = "ending";
 						   if(plugin.getConfig().getConfigurationSection("gameRules").getBoolean("endFireworks") == true) {
 							   FWCountdownTimer FWtimer = new FWCountdownTimer(plugin,
 				  		    			6,
@@ -152,12 +177,14 @@ public class Death implements Listener {
 						    		        },
 						    		        (t) -> {
 						    		        	for(Player p : Bukkit.getOnlinePlayers()) {
+						    		        		if(inATeam.checkTeam(p.getName()) == false) continue; 
 						    		        		if(inATeam.whichTeam(p.getName()).equalsIgnoreCase("team1") ) {
 								    		        	if(t.getSecondsLeft() % 2 == 0) {
 								    		        		ChatColor teamColor = ChatColor.getByChar(TeamManager.getTeam1().getColor().charAt(1));
 								    		        		FWManager.spawnFireworks(p.getLocation(), 1, FWManager.translateChatColorToColor(teamColor));
 								    		        	}
-						    		        		}
+						    		        		}				    		        			
+						    		        		
 						    		        	}
 
 						    		        }
@@ -165,19 +192,34 @@ public class Death implements Listener {
 						    		);
 				  		    	FWtimer.scheduleTimer();
 						   }
+						   List<String> winCommands = plugin.getConfig().getConfigurationSection("endCommands").getStringList("win");
+						   List<String> looseCommands = plugin.getConfig().getConfigurationSection("endCommands").getStringList("loose");
+						   for(Player p : Bukkit.getOnlinePlayers()) {
+							   if(inATeam.checkTeam(p.getName()) == false) continue;
+							   if(inATeam.whichTeam(p.getName()).equalsIgnoreCase("team1")) {
+								   for(String i : winCommands) {
+									 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), i.replaceAll("%player%", p.getName()));  
+								   }
+							   } else {
+								   for(String i : looseCommands) {
+									   Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), i.replaceAll("%player%", p.getName()));  
+								   }
+							   }
+						   }
 		        			CWendEvent event = new CWendEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()), "leave");
 							Bukkit.getPluginManager().callEvent(event);	
-			  		    	  CountdownTimer timer = new CountdownTimer(plugin,
+			  		    	  EndCountdownTimer timer = new EndCountdownTimer(plugin,
 			  		    			plugin.getConfig().getConfigurationSection("countdowns.end").getInt("delayBeforeRestart"),
 					    		        () ->  {
 					    		        	String msg2 = messagesFormatter.formatTimeMessage(messages.getConfigurationSection("events.death").getString("restartingIn"), plugin.getConfig().getConfigurationSection("countdowns.end").getInt("delayBeforeRestart"));
 					    		        	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg2));
 					    		        },
 				    		        () -> {   
-				    		        	CountdownTimer.cancelTimer();
+				    		        	EndCountdownTimer.cancelTimer();
 				    		        	new GameStateManager().stopGame();
-				    		        	new GameStateManager().checkStart();
-				    		        	
+				    		        	if(plugin.getConfig().getBoolean("stopServerAtEnd") == true) {
+				    		        		Bukkit.getServer().shutdown();
+				    		        	}
 	    		        	
 				    		        },
 				    		        (t) -> {
@@ -209,19 +251,23 @@ public class Death implements Listener {
 				    		        	
 				    		        },
 				    		        () -> {    
-				    		        	victim.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("events.death.soldier.message").getString("respawned")));
+				    		        	victim.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("events.death.soldier.message").getString("respawned"))));
 				    		        	victim.setGameMode(GameMode.SURVIVAL);
 				    					if(inATeam.whichTeam(victim.getName()).equalsIgnoreCase("team1")) {
 				    						String[] coords = team1Config.getString("soldier_spawnpoint").split(",");
 				    						Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 				    						victim.teleport(loc);
 				    						victim.setHealth(20.0);
+				    						victim.getInventory().clear();
+				    						new kitManager().setPlayerKit(victim);
 				    						
 				    					} else if(inATeam.whichTeam(victim.getName()).equalsIgnoreCase("team2")) {
 				    						String[] coords = team2Config.getString("soldier_spawnpoint").split(",");
 				    						Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 				    						victim.teleport(loc);
 				    						victim.setHealth(20.0);
+				    						victim.getInventory().clear();
+				    						new kitManager().setPlayerKit(victim);
 				    					}
 	    		        	
 				    		        },
