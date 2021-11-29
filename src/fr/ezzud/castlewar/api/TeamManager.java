@@ -40,7 +40,6 @@ public class TeamManager {
 	
 	public void initializeTeams() {
 		Scoreboard board = Main.board;	
-		Bukkit.getLogger().info("Unregistering...");
 		for(Team tm : board.getTeams()) {
 			tm.unregister();
 		}

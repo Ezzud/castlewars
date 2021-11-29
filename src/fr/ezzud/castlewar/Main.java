@@ -38,6 +38,7 @@ public class Main extends JavaPlugin implements Listener {
 	  public static YamlConfiguration kits;
 	  public static YamlConfiguration guis;
 	  public static YamlConfiguration data;
+	  public static YamlConfiguration messages;
 	  public static ScoreboardManager manager;
 	  public static Scoreboard board;
 	  public static boolean starting;
@@ -56,6 +57,9 @@ public class Main extends JavaPlugin implements Listener {
 	   }
 	   public static YamlConfiguration getData() {
 		      return data;
+	   }
+	   public static YamlConfiguration getMessages() {
+		      return messages;
 	   }
 	   
 	   
@@ -79,6 +83,9 @@ public class Main extends JavaPlugin implements Listener {
 		configManager.saveData();
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bdata.yml &aloaded"));
 		data = configManager.getData();
+		configManager.saveMessages();
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bmessages.yml &aloaded"));
+		messages = configManager.getMessages();
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
 		pm.registerEvents(new onInvClick(this), this);
@@ -102,7 +109,6 @@ public class Main extends JavaPlugin implements Listener {
 		if(Bukkit.getOnlinePlayers() != null && Bukkit.getOnlinePlayers().size() > 0) {
 			new GameStateManager().stopGame();
 		}
-		new GameStateManager().checkStart();
 	}
 	
 	

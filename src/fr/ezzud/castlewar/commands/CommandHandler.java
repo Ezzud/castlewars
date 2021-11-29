@@ -13,6 +13,7 @@ import fr.ezzud.castlewar.commands.admin.setLobbyCMD;
 import fr.ezzud.castlewar.commands.admin.setSpawnCMD;
 import fr.ezzud.castlewar.commands.admin.startCMD;
 import fr.ezzud.castlewar.commands.admin.stopCMD;
+import fr.ezzud.castlewar.commands.players.helpCMD;
 import fr.ezzud.castlewar.commands.players.kitsCMD;
 import fr.ezzud.castlewar.commands.players.teamCMD;
 import fr.ezzud.castlewar.methods.inATeam;
@@ -27,6 +28,9 @@ public class CommandHandler implements CommandExecutor {
 	   		return true;
 	   	}
 	   	switch(args[0]) {
+	   		case "help":
+	   			new helpCMD(player);
+	   			break;
 	   		case "menu":
 	   			if(GameStateManager.getGameState() == false) {
 	   				new teamCMD(player);

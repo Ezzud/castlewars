@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,18 +21,21 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 
 import fr.ezzud.castlewar.Main;
+import fr.ezzud.castlewar.api.events.CWstartEvent;
 import fr.ezzud.castlewar.methods.CountdownTimer;
 import fr.ezzud.castlewar.methods.RandomUtil;
 import fr.ezzud.castlewar.methods.configManager;
 import fr.ezzud.castlewar.methods.effectManager;
 import fr.ezzud.castlewar.methods.inATeam;
 import fr.ezzud.castlewar.methods.kitManager;
+import fr.ezzud.castlewar.methods.messagesFormatter;
 import fr.ezzud.castlewar.methods.worldManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class GameStateManager {
 	public static boolean GameState;
 	public Main plugin = Main.getInstance();
+	YamlConfiguration messages = Main.messages;
 	public static String team1King;
 	public static String team2King;
 	public static Player king1Player;
@@ -52,13 +54,14 @@ public class GameStateManager {
 	public void stopGame() {
 		Object[] array = Bukkit.getOnlinePlayers().toArray();
 		GameStateManager.GameState = false;
+		GameStateManager.createParticles = false;
 		king1Player = null;
 		king2Player = null;
 		team1King = null;
 		team2King = null;
-		TeamManager.clearTeam("team1");
-		TeamManager.clearTeam("team2");
+		new TeamManager().initializeTeams();
 		new TeamManager();
+		checkStart();
 		for(int i = 0; i < array.length; i++) {
 			Player player = (Player) array[i];
     		
@@ -69,6 +72,7 @@ public class GameStateManager {
 	               PotionEffectType effect = PotionEffectType.getByName(potionEffectName);
 	               player.removePotionEffect(effect);
 	        }
+        		player.setGameMode(GameMode.valueOf(plugin.getConfig().getString("spawnGamemode")));
         		player.teleport(coords);
         		player.setBedSpawnLocation(coords);
         		player.getInventory().clear();
@@ -77,7 +81,6 @@ public class GameStateManager {
 			   	player.setSaturation(20);
 			   	player.setLevel(0);
 			   	player.setExp(0);
-			   	player.setGameMode(GameMode.valueOf(plugin.getConfig().getString("spawnGamemode")));
 			   	player.setDisplayName(player.getName());
 			   	player.setPlayerListName(player.getName());
 			   	player.setStatistic(Statistic.TIME_SINCE_REST, 0);
@@ -117,7 +120,6 @@ public class GameStateManager {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void startGame() {
 		Scoreboard board = Main.board;
 		YamlConfiguration kitData = Main.data;
@@ -126,10 +128,9 @@ public class GameStateManager {
 			worldManager.copyWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world")), plugin.getConfig().getString("game_world") + "-castlewar");
 		}
 		GameState = true;
-		Bukkit.broadcastMessage("Game Started!");
 		Object[] array = Bukkit.getOnlinePlayers().toArray();
 		if(array.length < plugin.getConfig().getInt("minPlayers")) {
-			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "Not enough player to start the game"));
+			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("commands.start").getString("notEnough"))));
 			return;
 		}
 		new TeamManager();
@@ -137,31 +138,33 @@ public class GameStateManager {
 			Player player = (Player) array[i];
 			player.getInventory().clear();
 			player.getActivePotionEffects().clear();
-			Bukkit.getLogger().info("Choosing team of " + player.getName());
 			List<String> team1 = new ArrayList<>();
 			List<String> team2 = new ArrayList<>();
 
-			for(OfflinePlayer pl : board.getTeam("team1").getPlayers()) {
-				team1.add(pl.getName());
+			for(String pl : board.getTeam("team1").getEntries()) {
+				team1.add(pl);
 			}
-			for(OfflinePlayer pl : board.getTeam("team2").getPlayers()) {
-				team2.add(pl.getName());
+			for(String pl : board.getTeam("team2").getEntries()) {
+				team2.add(pl);
 			}
 			if(inATeam.checkTeam(player.getName()) == false) {
 				
 				if(team1.size() - 1 > team2.size() - 1) {
 		    		TeamManager.addMemberToTeam(player, "team2");
-	    			player.sendMessage("You joined the team 2");
+					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team2"));
+		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 	    			
 	    			
 				} else if(team1.size() - 1 < team2.size() - 1) {
 					TeamManager.addMemberToTeam(player, "team1");
-	    			player.sendMessage("You joined the team 1");	
+					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team1"));
+		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 	    			
 	    			
 				} else {
 					TeamManager.addMemberToTeam(player, "team1");
-	    			player.sendMessage("You joined the team 1");	
+					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team1"));
+		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 	    			
 	    			
 				}
@@ -187,7 +190,13 @@ public class GameStateManager {
 			ConfigurationSection team2Config = plugin.getConfig().getConfigurationSection("team2");
 			
 			if(player.getName().equalsIgnoreCase(team1King)) {
-				player.sendMessage("You are the king 1!");
+				List<String> msgList = new ArrayList<>();
+				for(String i1 : messages.getConfigurationSection("events.starting").getStringList("kingMessage")) {
+					msgList.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatTeamMessage(i1 , new CastleTeam("team1"))));
+				}
+				String[] strarray = new String[msgList.size()];
+				msgList.toArray(strarray);
+	    		player.sendMessage(strarray);
 				if(plugin.getConfig().getString("rankType").equalsIgnoreCase("prefix")) {
 					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
@@ -202,7 +211,13 @@ public class GameStateManager {
 				
 				
 			} else if(player.getName().equalsIgnoreCase(team2King)) {
-				player.sendMessage("You are the king 2!");
+				List<String> msgList = new ArrayList<>();
+				for(String i1 : messages.getConfigurationSection("events.starting").getStringList("kingMessage")) {
+					msgList.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatTeamMessage(i1 , new CastleTeam("team2"))));
+				}
+				String[] strarray = new String[msgList.size()];
+				msgList.toArray(strarray);
+	    		player.sendMessage(strarray);
 				if(plugin.getConfig().getString("rankType").equalsIgnoreCase("prefix")) {
 					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
@@ -227,10 +242,24 @@ public class GameStateManager {
 					
 				}	
 				if(inATeam.whichTeam(player.getName()).equalsIgnoreCase("team1")) {
+					List<String> msgList = new ArrayList<>();
+					for(String i1 : messages.getConfigurationSection("events.starting").getStringList("soldierMessage")) {
+						msgList.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatTeamMessage(i1 , new CastleTeam("team1"))));
+					}
+					String[] strarray = new String[msgList.size()];
+					msgList.toArray(strarray);
+		    		player.sendMessage(strarray);
 					String[] coords = team1Config.getString("soldier_spawnpoint").split(",");
 					Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 					player.teleport(loc);
 				} else if(inATeam.whichTeam(player.getName()).equalsIgnoreCase("team2")) {
+					List<String> msgList = new ArrayList<>();
+					for(String i1 : messages.getConfigurationSection("events.starting").getStringList("soldierMessage")) {
+						msgList.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatTeamMessage(i1 , new CastleTeam("team2"))));
+					}
+					String[] strarray = new String[msgList.size()];
+					msgList.toArray(strarray);
+		    		player.sendMessage(strarray);
 					String[] coords = team2Config.getString("soldier_spawnpoint").split(",");
 					Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 					player.teleport(loc);
@@ -248,7 +277,8 @@ public class GameStateManager {
 	    			Main.data = configManager.getData();
 				}
 				new kitManager().setPlayerKit(player);
-				
+    			CWstartEvent event = new CWstartEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()));
+				Bukkit.getPluginManager().callEvent(event);	
 				
 
 				
@@ -259,24 +289,24 @@ public class GameStateManager {
 	}
 	
 	public void checkStart() {
-		Bukkit.getLogger().info("Checking");
 		if(Bukkit.getOnlinePlayers().size() >= plugin.getConfig().getInt("minPlayers")) {
-			Bukkit.getLogger().info("More");
 			if(Main.starting == false) {
-				Bukkit.getLogger().info("Not Starting");
 		    	  CountdownTimer timer = new CountdownTimer(plugin,
-		    		        60,
+		    		        plugin.getConfig().getConfigurationSection("countdowns.starting").getInt("delayBeforeGameStart"),
 		    		        () ->  {
 		    		        	Main.starting = true;
-		    		        	Bukkit.broadcastMessage("Starting in 60...");
+		    		        	String msg = messagesFormatter.formatTimeMessage(messages.getConfigurationSection("events.starting").getString("startingMessage"), plugin.getConfig().getConfigurationSection("countdowns.starting").getInt("delayBeforeGameStart"));
+		    		        	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		    		        },
 		    		        () -> {    
-		    		        	Bukkit.broadcastMessage("Started"); 
+		    		        	String msg = messagesFormatter.formatMessage(messages.getConfigurationSection("events.starting").getString("startedMessage"));
+		    		        	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		    		        	new GameStateManager().startGame();
-		    		        	for(Player p : Bukkit.getOnlinePlayers()) {
-		    		        		Player pl = Bukkit.getPlayer(p.getName());
-		    		        		pl.setLevel(0);
-		    		        	}	
+		    		        	Object[] array = Bukkit.getOnlinePlayers().toArray();
+		    		    		for(int i = 0; i < array.length; i++) {
+		    		    			Player player = (Player) array[i];
+		    		        		player.setLevel(0);
+		    		    		}
 		    		        	Main.starting = false;
 		    		        	CountdownTimer.cancelTimer();
 		    		        },
@@ -284,24 +314,34 @@ public class GameStateManager {
 		    		        	if(GameStateManager.GameState == true) {
 		    		        		
 		    		        		Main.starting = false;
-			    		        	for(Player p : Bukkit.getOnlinePlayers()) {
-	  		    		        		p.setLevel(0);
-				    		        }
+			    		        	Object[] array = Bukkit.getOnlinePlayers().toArray();
+			    		    		for(int i = 0; i < array.length; i++) {
+			    		    			Player player = (Player) array[i];
+			    		        		player.setLevel(0);
+			    		    		}
 			    		        	CountdownTimer.cancelTimer();
 		    		        	}
 		    		        	if(Bukkit.getOnlinePlayers().size() < plugin.getConfig().getInt("minPlayers")) {
 		    		        		CountdownTimer.cancelTimer();
-		    		        		Bukkit.broadcastMessage("Stopped");
 		    		        		Main.starting = false;
 			    		        	for(Player p : Bukkit.getOnlinePlayers()) {
-			    		        		p.setLevel(0);
+			    		        		if(Main.starting == false) {
+			    		        			p.setLevel(0);
+			    		        		} else {
+			    		        			p.setLevel(t.getSecondsLeft());
+			    		        		}
 			    		        	}
 		    		        	}
 		    		        	if(Bukkit.getOnlinePlayers().size() == plugin.getConfig().getInt("maxPlayers")) {
-		    		        		t.reduceTimer(10);
+		    		        		t.reduceTimer(plugin.getConfig().getConfigurationSection("countdowns.starting").getInt("reducedDelayIfMaxPlayers"));
 		    		        	}
 		    		        	for(Player p : Bukkit.getOnlinePlayers()) {
-		    		        		p.setLevel(t.getSecondsLeft());
+		    		        		if(GameStateManager.GameState == true) {
+		    		        			p.setLevel(0);
+		    		        		} else {
+		    		        			p.setLevel(t.getSecondsLeft());
+		    		        		}
+		    		        		
 		    		        	}
 		    		        }
 

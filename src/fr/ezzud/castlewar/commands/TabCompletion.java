@@ -9,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import fr.ezzud.castlewar.api.GameStateManager;
+
 public class TabCompletion implements TabCompleter{
     @Override
     public List<String> onTabComplete (CommandSender sender, Command cmd, String label, String[] args){
@@ -20,6 +22,10 @@ public class TabCompletion implements TabCompleter{
                 list.add("help");
                 list.add("list");
                 list.add("teams");
+                list.add("kits");
+                if(GameStateManager.GameState == false) {
+                	list.add("menu");
+                }
 
                 if(player.hasPermission("castlewar.admin.reload")) {
                     list.add("reload");
@@ -42,6 +48,10 @@ public class TabCompletion implements TabCompleter{
         			case "list":
         				return null;
         			case "stop":
+        				return null;
+        			case "kits":
+        				return null;
+        			case "menu":
         				return null;
         			case "setspawn":
         				Bukkit.getLogger().info("setspawn");

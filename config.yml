@@ -10,7 +10,21 @@ gameRules:
    allowBreak: true
    foodLoss: false
    explosions: true
+   endFireworks: true
 
+joinLeaveMessages:
+   enabled: true
+   join: "%prefix% &e%player% &7joined the game (%playercount%/%maxplayers%)"
+   leave: "%prefix% &e%player% &7left the game (%playercount%/%maxplayers%)"
+
+
+countdowns:
+   starting:
+      delayBeforeGameStart: 60
+      reducedDelayIfMaxPlayers: 10
+   end: 
+      delayBeforeRestart: 10
+   respawnDelay: 5
 
 kingConfig:
    particlesEnabled: true

@@ -38,7 +38,6 @@ public class Chat implements Listener {
                		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-               		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
                		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
@@ -54,7 +53,6 @@ public class Chat implements Listener {
                 		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                 		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                 		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-                		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                 		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
                    		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                    			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
@@ -68,7 +66,6 @@ public class Chat implements Listener {
                 		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                 		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                 		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-                		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                 		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
                    		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                    			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
@@ -86,7 +83,6 @@ public class Chat implements Listener {
                		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-               		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
                		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
@@ -107,7 +103,6 @@ public class Chat implements Listener {
                    		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                    		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                    		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-                   		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                    		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
                    		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                    			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage().substring(1)));
@@ -121,7 +116,6 @@ public class Chat implements Listener {
                    		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                    		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                    		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-                   		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                    		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
                    		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                    			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
@@ -146,7 +140,6 @@ public class Chat implements Listener {
            		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
            		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
            		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-           		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
            		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
            		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
            			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
@@ -161,7 +154,6 @@ public class Chat implements Listener {
             		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
             		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
             		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-            		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
             		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
                		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
@@ -175,7 +167,6 @@ public class Chat implements Listener {
             		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
             		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
             		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-            		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
             		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
                		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
