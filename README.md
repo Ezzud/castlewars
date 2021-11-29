@@ -1,13 +1,44 @@
 # CastleWars
 
-<h3>State: Just Started</h3>
+<h3>State: 90%</h3>
 
 CastleWars is a Minecraft plugin who allow you to make your own castle wars
 
 Features planned:
-  - Custom Kits w/ GUIs (Citizens Support)
-  - Fully customisable
-  - Powerful API
+  - ✅ Custom Kits w/ GUIs (Citizens Support)
+  - ✅ Fully customisable
+  - ✅ Powerful API
+  - ✅ Win/Loose commands
+  - ✅ Respawn delay
+  - ➖ End Effects (Animations)
+  
+Features:
+  <p>
+
+  - Particles/Glowing
+  - Team Chat
+  - Tablist completer
+  - Configuration Command
+  - Fully customisable (messages, GUIs, Kits, teams)
+  - Custom Scoreboard
+  - Usage of NameTagEdit
+  - Spectator mode
+  - Custom Join/Leave messages
+  - API Events & Functions
+  - Auto-restart
+  - Auto-shutdown server
+  - Custom cooldowns
+  - Custom Game Rules
   - Win/Loose commands
-  - Respawn delay
-  - End Effects
+  - World refreshing
+</p>
+
+TO-DO:
+
+<p>
+    
+    - "list" Command
+    - "team" command
+    - Customisable sounds
+  
+  </p>
