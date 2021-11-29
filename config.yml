@@ -19,7 +19,14 @@ kingConfig:
 
 chatFormat:
    enabled: true
-   format: "%teamcolor%%teamname% %player%&f: %message%"
+   format: "Default | %teamcolor%%teamname% %player%&f: %message%"
+   allowColors: true
+   colorsPermission: castlewar.colors
+   teamChat:
+      enabled: true
+      privateChatFormat: "PV Team | %teamcolor%%teamname% %player%&f: &e%message%"
+      globalChatFormat: "Global | %teamcolor%%teamname% %player%&f: %message%"
+      globalChatPrefix: '@'
 
 teamChooseItem: 
    enabled: true
@@ -49,6 +56,11 @@ team2:
    prefix: "&cRED &7"
    soldier_spawnpoint: 0,80,-100,10,10
    king_spawnpoint: 0,80,-100,10,10
+   
+noTeam:
+   name: "&f"
+   color: "&c"
+   prefix: "&f"
    
 rankType: "suffix"   
 soldier_rank: "&7"

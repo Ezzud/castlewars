@@ -20,6 +20,7 @@ public class Damage implements Listener {
     
 	   @EventHandler
 	   public void onEntityDamage(EntityDamageEvent event) {
+		   if(event.isCancelled() == true) return;
 		   if (event.getEntity() instanceof Player) {
 			   if(GameStateManager.getGameState() == false) {
 				   event.setCancelled(true);
@@ -28,6 +29,7 @@ public class Damage implements Listener {
 	   }
 	   @EventHandler
 	   public void onPlayerDamage(EntityDamageByEntityEvent event) {
+		   if(event.isCancelled() == true) return;
 		   if(GameStateManager.getGameState() == false) return;
 		   if(event.getEntity() instanceof Player) {
 			   if(event.getDamager() instanceof Player) {

@@ -17,10 +17,13 @@ public class TeamManager {
 	ConfigurationSection team2Info = plugin.getConfig().getConfigurationSection("team2");
 	private static CastleTeam team1;
 	private static CastleTeam team2;
+	private static CastleTeam noteam;
+	
 	YamlConfiguration teams = Main.teams;
 	public TeamManager() {
 		team1 = new CastleTeam("team1");
 		team2 = new CastleTeam("team2");
+		noteam = new CastleTeam("noTeam");
 	}
 	
 	public static CastleTeam getTeam1() {
@@ -31,6 +34,9 @@ public class TeamManager {
 		return team2;		
 	}
 	
+	public static CastleTeam getNoTeam() {
+		return noteam;		
+	}
 	
 	public void initializeTeams() {
 		Scoreboard board = Main.board;	
