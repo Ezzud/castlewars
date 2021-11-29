@@ -10,7 +10,12 @@ public class CWKillEvent extends Event {
 	private CastlePlayer victim;
 	
 	public CWKillEvent(CastlePlayer killer, CastlePlayer victim) {
-		this.killer = killer;
+		if(killer == null) {
+			this.killer = null;
+		} else {
+			this.killer = killer;
+		}
+		
 		this.victim = victim;
 	}
 	

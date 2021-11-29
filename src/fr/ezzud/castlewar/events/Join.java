@@ -22,10 +22,12 @@ import fr.ezzud.castlewar.api.GameStateManager;
 import fr.ezzud.castlewar.methods.CountdownTimer;
 import fr.ezzud.castlewar.methods.configManager;
 import fr.ezzud.castlewar.methods.inATeam;
+import fr.ezzud.castlewar.methods.messagesFormatter;
 import net.md_5.bungee.api.ChatColor;
 
 public class Join implements Listener {
 	YamlConfiguration data = Main.data;
+	YamlConfiguration messages = Main.messages;
     Main plugin;
     public Join(Main instance) {
         plugin = instance;
@@ -34,10 +36,15 @@ public class Join implements Listener {
     @SuppressWarnings("deprecation")
 	@EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-    	e.setJoinMessage(null);
+    	if(plugin.getConfig().getConfigurationSection("joinLeaveMessages").getBoolean("enabled") == true) {
+    		e.setJoinMessage(null);
+    	}
     	Player player = e.getPlayer();
         	if(GameStateManager.getGameState() == false) {
-        		
+            	if(plugin.getConfig().getConfigurationSection("joinLeaveMessages").getBoolean("enabled") == true) {
+            		String joinmsg = messagesFormatter.formatJoinMessage(plugin.getConfig().getConfigurationSection("joinLeaveMessages").getString("join"), player, Bukkit.getOnlinePlayers().size());
+            		Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', joinmsg));
+            	}
         		String[] coordsStr = plugin.getConfig().getString("lobby_spawnpoint").split(",");
         		Location coords = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world")), Double.parseDouble(coordsStr[0]), Double.parseDouble(coordsStr[1]), Double.parseDouble(coordsStr[2]), Float.parseFloat(coordsStr[3]), Float.parseFloat(coordsStr[4]));
             	for (Object cItem : player.getActivePotionEffects()) {
@@ -98,12 +105,14 @@ public class Join implements Listener {
 						ConfigurationSection team1Config = plugin.getConfig().getConfigurationSection("team1");
 						ConfigurationSection team2Config = plugin.getConfig().getConfigurationSection("team2");
 		  		    	  CountdownTimer timer = new CountdownTimer(plugin,
-				    		        5,
+		  		    			plugin.getConfig().getConfigurationSection("countdowns").getInt("respawnDelay"),
 				    		        () ->  {
-				    		        	player.sendMessage("Vous êtes mort!");
+				    		        		String msg = messagesFormatter.formatKillMessage(messages.getConfigurationSection("events.death.soldier.message").getString("other"), player, null);
+				    		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+				    		        	
 				    		        },
 				    		        () -> {    
-				    		        	player.sendMessage("Réapparition!");
+				    		        	player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("events.death.soldier.message").getString("respawned")));
 				    		        	player.setGameMode(GameMode.SURVIVAL);
 				    					if(inATeam.whichTeam(player.getName()).equalsIgnoreCase("team1")) {
 				    						String[] coords = team1Config.getString("soldier_spawnpoint").split(",");
@@ -120,7 +129,8 @@ public class Join implements Listener {
 	    		        	
 				    		        },
 				    		        (t) -> {
-				    		        	player.sendTitle(ChatColor.translateAlternateColorCodes('&', "Réapparition dans"), ChatColor.translateAlternateColorCodes('&', String.valueOf(t.getSecondsLeft())), 2, 20, 2);
+				    		        	String subtitle = messagesFormatter.formatTimeMessage(messages.getConfigurationSection("events.death.soldier.title").getString("subtitle"), t.getSecondsLeft());
+				    		        	player.sendTitle(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("events.death.soldier.title").getString("main")), ChatColor.translateAlternateColorCodes('&', subtitle), 2, 20, 2);
 				    		        }
 
 				    		);

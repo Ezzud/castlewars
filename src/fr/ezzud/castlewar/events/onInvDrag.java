@@ -32,14 +32,14 @@ public class onInvDrag implements Listener {
      if (e.getOldCursor().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', teamItemInfo[2]))) {
          if(e.getOldCursor().getType() == Material.valueOf(teamItemInfo[0])) {
         	 e.setCancelled(true);
-        	 e.getWhoClicked().getItemOnCursor().setAmount(0);;
+        	 e.getWhoClicked().getItemOnCursor().setAmount(0);
          }
     	 
      }   
      if (e.getOldCursor().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', kitItemInfo[2]))) {
          if(e.getOldCursor().getType() == Material.valueOf(kitItemInfo[0])) {
         	 e.setCancelled(true);
-        	 e.getWhoClicked().getItemOnCursor().setAmount(0);;
+        	 e.getWhoClicked().getItemOnCursor().setAmount(0);
          }
     	 
      } 

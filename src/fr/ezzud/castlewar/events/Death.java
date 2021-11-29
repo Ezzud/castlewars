@@ -7,15 +7,22 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import fr.ezzud.castlewar.Main;
+import fr.ezzud.castlewar.api.CastlePlayer;
+import fr.ezzud.castlewar.api.CastleTeam;
 import fr.ezzud.castlewar.api.GameStateManager;
+import fr.ezzud.castlewar.api.events.CWKillEvent;
+import fr.ezzud.castlewar.api.events.CWendEvent;
 import fr.ezzud.castlewar.methods.CountdownTimer;
+import fr.ezzud.castlewar.methods.EndCountdownTimer;
 import fr.ezzud.castlewar.methods.inATeam;
+import fr.ezzud.castlewar.methods.messagesFormatter;
 import net.md_5.bungee.api.ChatColor;
 
 
@@ -34,7 +41,9 @@ public class Death implements Listener {
 			   Player victim = (Player) e.getEntity();
 			   
 			   if(victim.getHealth() - e.getDamage() < 1) {
+				   
 				   e.setCancelled(true);
+				   YamlConfiguration messages = Main.messages;
 				   if(victim.getName().equalsIgnoreCase(GameStateManager.team1King)) {
 					   GameStateManager.GameState = false;
 					   GameStateManager.createParticles = false;
@@ -46,21 +55,32 @@ public class Death implements Listener {
 				    		  player.setDisplayName(ChatColor.RESET + player.getName());
 				    		  player.setPlayerListName(ChatColor.RESET + player.getName());
 				    	  });
+				    	
 					   if(e.getDamager() instanceof Player) {
-						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', e.getDamager().getName() + " &ehas killed the enemy king"));
+						   String msg = messagesFormatter.formatKillMessage(messages.getConfigurationSection("events.death.king.message").getString("byPlayer"), victim, (Player) e.getDamager());
+		        			CWKillEvent killEvent = new CWKillEvent(new CastlePlayer(e.getDamager().getName()), new CastlePlayer(victim.getName()));
+							Bukkit.getPluginManager().callEvent(killEvent);	
+						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
 					   } else {
-						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eThe king of team 1 died"));
+						   String msg = messagesFormatter.formatKillMessage(messages.getConfigurationSection("events.death.king.message").getString("other"), victim, null);
+						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+		        			CWKillEvent killEvent = new CWKillEvent(null, new CastlePlayer(victim.getName()));
+							Bukkit.getPluginManager().callEvent(killEvent);	
 					   }
-					   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eVictory of team 2"));
-		  		    	  CountdownTimer timer = new CountdownTimer(plugin,
-				    		        10,
+					   String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.death.king").getString("victoryMessage"), new CastleTeam("team2"));
+					   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+
+	        			CWendEvent event = new CWendEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()), "leave");
+						Bukkit.getPluginManager().callEvent(event);	
+		  		    	  EndCountdownTimer timer = new EndCountdownTimer(plugin,
+		  		    			plugin.getConfig().getConfigurationSection("countdowns.end").getInt("delayBeforeRestart"),
 				    		        () ->  {
-				    		        	Bukkit.broadcastMessage("Redémarrage dans 10 secondes!");
+				    		        	String msg2 = messagesFormatter.formatTimeMessage(messages.getConfigurationSection("events.death").getString("restartingIn"), plugin.getConfig().getConfigurationSection("countdowns.end").getInt("delayBeforeRestart"));
+				    		        	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg2));
 				    		        },
 				    		        () -> {    
-				    		        	CountdownTimer.cancelTimer();
+				    		        	EndCountdownTimer.cancelTimer();
 				    		        	new GameStateManager().stopGame();
-				    		        	new GameStateManager().checkStart();
 				    		        	
 	    		        	
 				    		        },
@@ -82,17 +102,27 @@ public class Death implements Listener {
 				    		  player.setDisplayName(ChatColor.RESET + player.getName());
 				    		  player.setPlayerListName(ChatColor.RESET + player.getName());
 				    	  });
-					   if(e.getDamager() instanceof Player) {
-						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', e.getDamager().getName() + " &ehas killed the enemy king"));
-					   } else {
-						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eThe king of team 2 died"));
-					   }
-					   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&eVictory of team 1"));
-		  		    	  CountdownTimer timer = new CountdownTimer(plugin,
-				    		        10,
-				    		        () ->  {
-				    		        	Bukkit.broadcastMessage("Redémarrage dans 10 secondes!");
-				    		        },
+						   if(e.getDamager() instanceof Player) {
+							   String msg = messagesFormatter.formatKillMessage(messages.getConfigurationSection("events.death.king.message").getString("byPlayer"), victim, (Player) e.getDamager());
+							   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+			        			CWKillEvent killEvent = new CWKillEvent(new CastlePlayer(e.getDamager().getName()), new CastlePlayer(victim.getName()));
+								Bukkit.getPluginManager().callEvent(killEvent);	
+						   } else {
+							   String msg = messagesFormatter.formatKillMessage(messages.getConfigurationSection("events.death.king.message").getString("other"), victim, null);
+							   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+			        			CWKillEvent killEvent = new CWKillEvent(null, new CastlePlayer(victim.getName()));
+								Bukkit.getPluginManager().callEvent(killEvent);	
+						   }
+						   String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.death.king").getString("victoryMessage"), new CastleTeam("team1"));
+						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+		        			CWendEvent event = new CWendEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()), "leave");
+							Bukkit.getPluginManager().callEvent(event);	
+			  		    	  CountdownTimer timer = new CountdownTimer(plugin,
+			  		    			plugin.getConfig().getConfigurationSection("countdowns.end").getInt("delayBeforeRestart"),
+					    		        () ->  {
+					    		        	String msg2 = messagesFormatter.formatTimeMessage(messages.getConfigurationSection("events.death").getString("restartingIn"), plugin.getConfig().getConfigurationSection("countdowns.end").getInt("delayBeforeRestart"));
+					    		        	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg2));
+					    		        },
 				    		        () -> {   
 				    		        	CountdownTimer.cancelTimer();
 				    		        	new GameStateManager().stopGame();
@@ -113,12 +143,23 @@ public class Death implements Listener {
 						ConfigurationSection team1Config = plugin.getConfig().getConfigurationSection("team1");
 						ConfigurationSection team2Config = plugin.getConfig().getConfigurationSection("team2");
 		  		    	  CountdownTimer timer = new CountdownTimer(plugin,
-				    		        5,
+		  		    			plugin.getConfig().getConfigurationSection("countdowns").getInt("respawnDelay"),
 				    		        () ->  {
-				    		        	victim.sendMessage("Vous êtes mort!");
+				    		        	if(e.getDamager() instanceof Player) {
+				    		        		String msg = messagesFormatter.formatKillMessage(messages.getConfigurationSection("events.death.soldier.message").getString("byPlayer"), victim, (Player) e.getDamager());
+				    		        		victim.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+						        			CWKillEvent killEvent = new CWKillEvent(new CastlePlayer(e.getDamager().getName()), new CastlePlayer(victim.getName()));
+											Bukkit.getPluginManager().callEvent(killEvent);	
+				    		        	} else {
+				    		        		String msg = messagesFormatter.formatKillMessage(messages.getConfigurationSection("events.death.soldier.message").getString("other"), victim, null);
+				    		        		victim.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+						        			CWKillEvent killEvent = new CWKillEvent(null, new CastlePlayer(victim.getName()));
+											Bukkit.getPluginManager().callEvent(killEvent);	
+				    		        	}
+				    		        	
 				    		        },
 				    		        () -> {    
-				    		        	victim.sendMessage("Réapparition!");
+				    		        	victim.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("events.death.soldier.message").getString("respawned")));
 				    		        	victim.setGameMode(GameMode.SURVIVAL);
 				    					if(inATeam.whichTeam(victim.getName()).equalsIgnoreCase("team1")) {
 				    						String[] coords = team1Config.getString("soldier_spawnpoint").split(",");
@@ -135,7 +176,8 @@ public class Death implements Listener {
 	    		        	
 				    		        },
 				    		        (t) -> {
-				    		        	victim.sendTitle(ChatColor.translateAlternateColorCodes('&', "Réapparition dans"), ChatColor.translateAlternateColorCodes('&', String.valueOf(t.getSecondsLeft())), 2, 20, 2);
+				    		        	String subtitle = messagesFormatter.formatTimeMessage(messages.getConfigurationSection("events.death.soldier.title").getString("subtitle"), t.getSecondsLeft());
+				    		        	victim.sendTitle(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("events.death.soldier.title").getString("main")), ChatColor.translateAlternateColorCodes('&', subtitle), 2, 20, 2);
 				    		        }
 
 				    		);

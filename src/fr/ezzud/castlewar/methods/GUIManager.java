@@ -28,7 +28,7 @@ public class GUIManager {
 	YamlConfiguration guis = Main.guis;
 	YamlConfiguration data = Main.data;
 	YamlConfiguration kits = Main.kits;
-	
+	YamlConfiguration messages = Main.messages;
 
 	public void initializeKitsGUI(Inventory inv) {
 		ConfigurationSection chooseItem = guis.getConfigurationSection("chooseKit.chooseItems");
@@ -49,11 +49,11 @@ public class GUIManager {
     			Main.data = configManager.getData();
         	}
         	if (!player.hasPermission(permission) && !player.isOp()) {
-        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', "&cYou don't have permission to use this kit!"));
+        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.kits").getString("noPermission"))));
         	} else if(data.getString(String.valueOf(player.getUniqueId())).equalsIgnoreCase(itemSec.getString("kit"))) {
-        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', "&cKit already selected"));
+        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.kits").getString("alreadySelected"))));
         	} else {
-        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', "&aClick to select this kit!"));
+        		kitDesc.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.kits").getString("select"))));
         	}
         	
     		Iterator<String> kitLore = itemSec.getStringList("lore").iterator();
@@ -110,16 +110,16 @@ public class GUIManager {
     	String[] team1Info = team1Item.getString("item").split(",");
     	   List<String> team1List = new ArrayList<String>();
     	   List<String> team1Team = new ArrayList<>();
-    	   for(OfflinePlayer pl : board.getTeam("team1").getPlayers()) {
-    		   team1Team.add(pl.getName());
+    	   for(String pl : board.getTeam("team1").getEntries()) {
+    		   team1Team.add(pl);
     	   }
      	   List<String> team11team = new ArrayList<String>();
     	   if(inATeam.checkSpecificTeam(player.getName(), "team1") == true) {
-    		   team1List.add(ChatColor.translateAlternateColorCodes('&', "&cYou are already in this team"));
+    		   team1List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("alreadyInTeam"))));
     	   } else if(team1Team.size() - 1 >= maxPlayer) {
-    		   team1List.add(ChatColor.translateAlternateColorCodes('&', "&cTeam is full!"));
+    		   team1List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("full"))));
     	   } else {
-    		   team1List.add(ChatColor.translateAlternateColorCodes('&', "&aClick to join the team")); 
+    		   team1List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("join")))); 
     	   }
      	   
      	   for(int i = 0; i < maxPlayer + 1; i++) {
@@ -131,9 +131,9 @@ public class GUIManager {
      	   for(String i : team11team) {
      		   if(!i.equalsIgnoreCase("team1")) {
      	 		   if(i == "none") {
-     	 			  team1List.add(ChatColor.translateAlternateColorCodes('&', "&e- ")); 
+     	 			  team1List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("teamListFormat").replaceAll("%player%", " "))));  
      	 		   } else {
-     	 			  team1List.add(ChatColor.translateAlternateColorCodes('&', "&e- &7" + i));  
+     	 			  team1List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("teamListFormat").replaceAll("%player%", i))));   
      	 		   }			   
      		   } 		   
      	   }
@@ -155,11 +155,11 @@ public class GUIManager {
  	   }
   	   List<String> team22team = new ArrayList<String>();
  	   if(inATeam.checkSpecificTeam(player.getName(), "team2") == true) {
-		   team2List.add(ChatColor.translateAlternateColorCodes('&', "&cYou are already in this team"));
+		   team2List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("alreadyInTeam"))));
 	   } else if(team2Team.size() - 1 >= maxPlayer) {
-		   team2List.add(ChatColor.translateAlternateColorCodes('&', "&cTeam is full!"));
+		   team2List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("full"))));
 	   } else {
-		   team2List.add(ChatColor.translateAlternateColorCodes('&', "&aClick to join the team")); 
+		   team2List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("join")))); 
 	   }
 
  	   for(int i = 0; i < maxPlayer + 1; i++) {
@@ -171,9 +171,9 @@ public class GUIManager {
  	   for(String i : team22team) {
  		   if(!i.equalsIgnoreCase("team2")) {
  	 		   if(i == "none") {
- 	 			  team2List.add(ChatColor.translateAlternateColorCodes('&', "&e- ")); 
+ 	 			  team2List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("teamListFormat").replaceAll("%player%", " ")))); 
  	 		   } else {
- 	 			  team2List.add(ChatColor.translateAlternateColorCodes('&', "&e- &7" + i));  
+ 	 			  team2List.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("gui.team").getString("teamListFormat").replaceAll("%player%", i))));  
  	 		   }			   
  		   } 		   
  	   }

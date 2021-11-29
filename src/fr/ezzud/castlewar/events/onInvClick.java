@@ -18,7 +18,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 
 import fr.ezzud.castlewar.Main;
+import fr.ezzud.castlewar.api.CastleKit;
+import fr.ezzud.castlewar.api.CastleTeam;
 import fr.ezzud.castlewar.api.TeamManager;
+import fr.ezzud.castlewar.api.events.CWkitChangeEvent;
 import fr.ezzud.castlewar.commands.players.kitsCMD;
 import fr.ezzud.castlewar.commands.players.teamCMD;
 import fr.ezzud.castlewar.gui.KitsGUI;
@@ -26,6 +29,7 @@ import fr.ezzud.castlewar.gui.TeamGUI;
 import fr.ezzud.castlewar.methods.GUIManager;
 import fr.ezzud.castlewar.methods.configManager;
 import fr.ezzud.castlewar.methods.inATeam;
+import fr.ezzud.castlewar.methods.messagesFormatter;
 import net.md_5.bungee.api.ChatColor;
 
 public class onInvClick implements Listener {
@@ -33,6 +37,7 @@ public class onInvClick implements Listener {
 	YamlConfiguration guis = Main.guis;
 	YamlConfiguration data = Main.data;
 	YamlConfiguration kits = Main.kits;
+	YamlConfiguration messages = Main.messages;
 	ConfigurationSection chooseTeam = guis.getConfigurationSection("chooseTeam");
 	ConfigurationSection chooseKit = guis.getConfigurationSection("chooseKit");
 	ConfigurationSection team1 = guis.getConfigurationSection("chooseTeam.chooseItems.team1");
@@ -75,10 +80,16 @@ public class onInvClick implements Listener {
 		    	 ConfigurationSection item = items.getConfigurationSection(String.valueOf(i));
 		    	 if(clickedItem.getItemMeta().getDisplayName().contains(ChatColor.translateAlternateColorCodes('&', item.getString("item").split(",")[2]))) {
 		    		 if(kits.getConfigurationSection("kits." + item.getString("kit")) == null) {
-			        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cKit does not exists!"));
+			        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("notExist")));
 			        		return;	 
 		    		 }
 		         	String permission = kits.getConfigurationSection("kits." + item.getString("kit")).getString("permission");
+		         	String oldKit = null;
+		         	if(data.getString(String.valueOf(player.getUniqueId())) == null) {
+		         		oldKit = plugin.getConfig().getString("default_kit");
+		         	} else {
+		         		oldKit = data.getString(String.valueOf(player.getUniqueId()));
+		         	}
 		        	if(data.getString(String.valueOf(player.getUniqueId())) == null) {
 						data.set(String.valueOf(player.getUniqueId()), plugin.getConfig().getString("default_kit"));
 		    			try {
@@ -89,10 +100,10 @@ public class onInvClick implements Listener {
 		    			Main.data = configManager.getData();
 		        	}
 		         	if (!player.hasPermission(permission) && !player.isOp()) {
-		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou don't have permission to use this kit!"));
+		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("noPermission")));
 		        		return;
 		        	} else if(data.getString(String.valueOf(player.getUniqueId())).equalsIgnoreCase(item.getString("kit"))) {
-		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cKit already selected"));
+		        		player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("alreadySelected")));
 		        		return;
 		        	}
 					data.set(String.valueOf(player.getUniqueId()), item.getString("kit"));
@@ -102,8 +113,10 @@ public class onInvClick implements Listener {
 						e1.printStackTrace();
 					}
 	    			Main.data = configManager.getData();
-	    			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eYou selected the kit " + item.getString("kit")));
-		    		new GUIManager(player).initializeKitsGUI(new TeamGUI(player).getInventory());
+	    			player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("kits").getString("kitChange").replaceAll("%kitname%",item.getString("kit"))));
+        			CWkitChangeEvent event = new CWkitChangeEvent(new CastleKit(oldKit), new CastleKit(item.getString("kit")));
+					Bukkit.getPluginManager().callEvent(event);	
+	    			new GUIManager(player).initializeKitsGUI(new TeamGUI(player).getInventory());
 		    		new GUIManager(player).openInventory(player, new KitsGUI(player).getInventory());    	       	
 		         	
 		         	
@@ -133,18 +146,19 @@ public class onInvClick implements Listener {
 		    			newTeam.add(pl);
 		    		}
 		    		if(newTeam.size() - 1 >= maxPlayer) {
-		    			player.sendMessage("Team full");
+		    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("full"))));
 		    			return;
 		    		}
 		    		if(newTeam.size() > board.getTeam("team2").getEntries().size()) {
-		    			player.sendMessage("Teams are not balanced");
+		    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("notBalanced"))));
 		    			return;
 		    		}
 		    		TeamManager.addMemberToTeam(player, "team1");
 		    		
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
-		    		player.sendMessage("Joined team 1!");
+					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team1"));
+		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		    		for(Player p : Bukkit.getOnlinePlayers()) {
 		    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
 				    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
@@ -165,11 +179,11 @@ public class onInvClick implements Listener {
 			    			actualTeam.add(pl);
 			    		}
 			    		if(newTeam.size() - 1 >= maxPlayer) {
-			    			player.sendMessage("Team full");
+			    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("full"))));
 			    			return;
 			    		}	
 			    		if(newTeam.size() + 1 > board.getTeam("team2").getEntries().size()) {
-			    			player.sendMessage("Teams are not balanced");
+			    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("notBalanced"))));
 			    			return;
 			    		}
 			    		TeamManager.addMemberToTeam(player, "team1");
@@ -178,7 +192,8 @@ public class onInvClick implements Listener {
 						player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 			    		
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
-			    		player.sendMessage("Joined team 1!");
+						String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team1"));
+			    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 			    		for(Player p : Bukkit.getOnlinePlayers()) {
 			    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
 					    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
@@ -205,11 +220,11 @@ public class onInvClick implements Listener {
 		    			newTeam.add(pl);
 		    		}
 		    		if(newTeam.size() - 1 >= maxPlayer) {
-		    			player.sendMessage("Team full");
+		    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("full"))));
 		    			return;
 		    		}
 		    		if(newTeam.size() > board.getTeam("team1").getEntries().size()) {
-		    			player.sendMessage("Teams are not balanced");
+		    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("notBalanced"))));
 		    			return;
 		    		}
 		    		
@@ -217,7 +232,8 @@ public class onInvClick implements Listener {
 		    		
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
-		    		player.sendMessage("Joined team 2!");
+					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team2"));
+		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		    		for(Player p : Bukkit.getOnlinePlayers()) {
 		    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
 				    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
@@ -238,11 +254,11 @@ public class onInvClick implements Listener {
 			    		}
 			    		
 			    		if(newTeam.size() - 1 >= maxPlayer) {
-			    			player.sendMessage("Team full");
+			    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("full"))));
 			    			return;
 			    		}	
 			    		if(newTeam.size() + 1 > board.getTeam("team1").getEntries().size()) {
-			    			player.sendMessage("Teams are not balanced");
+			    			player.sendMessage(messagesFormatter.formatMessage(ChatColor.translateAlternateColorCodes('&', messages.getConfigurationSection("teams").getString("notBalanced"))));
 			    			return;
 			    		}
 			    		TeamManager.addMemberToTeam(player, "team2");
@@ -251,7 +267,8 @@ public class onInvClick implements Listener {
 						player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 			    		
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
-			    		player.sendMessage("Joined team 2!");
+						String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team2"));
+			    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 			    		for(Player p : Bukkit.getOnlinePlayers()) {
 			    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
 					    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());
@@ -275,6 +292,8 @@ public class onInvClick implements Listener {
 			    		}
 			    		TeamManager.removeMemberFromTeam(player, "team2");
 		    		}
+					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("leave"), new CastleTeam("team1"));
+		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		    		player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getName()));
 		    		player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getName()));
 		    		for(Player p : Bukkit.getOnlinePlayers()) {
