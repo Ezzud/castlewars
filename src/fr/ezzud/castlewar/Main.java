@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import fr.ezzud.castlewar.api.GameStateManager;
 import fr.ezzud.castlewar.api.TeamManager;
@@ -29,8 +28,9 @@ import fr.ezzud.castlewar.events.Leave;
 import fr.ezzud.castlewar.events.PlaceBreak;
 import fr.ezzud.castlewar.events.onInvClick;
 import fr.ezzud.castlewar.events.onInvDrag;
-import fr.ezzud.castlewar.methods.configManager;
-import fr.ezzud.castlewar.methods.worldManager;
+import fr.ezzud.castlewar.methods.managers.ScoreboardManager;
+import fr.ezzud.castlewar.methods.managers.configManager;
+import fr.ezzud.castlewar.methods.managers.worldManager;
 
 public class Main extends JavaPlugin implements Listener {
 	  private static Main plugin;
@@ -39,9 +39,10 @@ public class Main extends JavaPlugin implements Listener {
 	  public static YamlConfiguration guis;
 	  public static YamlConfiguration data;
 	  public static YamlConfiguration messages;
-	  public static ScoreboardManager manager;
+	  public static org.bukkit.scoreboard.ScoreboardManager manager;
 	  public static Scoreboard board;
 	  public static boolean starting;
+	  public static fr.ezzud.castlewar.methods.managers.ScoreboardManager scoreboardManager;
 	   public static Main getInstance() {
 		      return plugin;
 	   }
@@ -66,6 +67,8 @@ public class Main extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		GameStateManager.GameState = false;
+		GameStateManager.GameStateText = "waiting";
+		GameStateManager.startDate = null;
 		plugin = this;
 		starting = false;
 		manager = plugin.getServer().getScoreboardManager();
@@ -76,7 +79,6 @@ public class Main extends JavaPlugin implements Listener {
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bkits.yml &aloaded"));
 		kits = configManager.getKits();
 		new TeamManager().initializeTeams();
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bTeams &aloaded"));
 		configManager.saveGUIs();
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bguis.yml &aloaded"));
 		guis = configManager.getGUIs();
@@ -109,7 +111,10 @@ public class Main extends JavaPlugin implements Listener {
 		if(Bukkit.getOnlinePlayers() != null && Bukkit.getOnlinePlayers().size() > 0) {
 			new GameStateManager().stopGame();
 		}
-	}
+		scoreboardManager = new ScoreboardManager();
+		this.startUpdateTask();
+		}
+	
 	
 	
 	@Override
@@ -126,5 +131,12 @@ public class Main extends JavaPlugin implements Listener {
 			}		
 		}
 
+	}
+	
+	
+	private void startUpdateTask() {
+		Bukkit.getScheduler().runTaskTimer(this, () -> {
+			scoreboardManager.getPlayerScoreboards().values().forEach((scoreboard) -> scoreboard.update());
+		}, 0L, 20L); // Very fast, every tick.
 	}
 }

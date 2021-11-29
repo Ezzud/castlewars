@@ -11,6 +11,14 @@ gameRules:
    foodLoss: false
    explosions: true
    endFireworks: true
+   
+endCommands:
+   win:
+      - eco give %player% 00
+      - tell %player% You win!
+   loose:
+      - eco give %player% 1
+      - tell %player% You lost!
 
 joinLeaveMessages:
    enabled: true
@@ -33,14 +41,14 @@ kingConfig:
 
 chatFormat:
    enabled: true
-   format: "Default | %teamcolor%%teamname% %player%&f: %message%"
+   format: '&7%teamcolor%%teamname% %player%&f: %message%'
    allowColors: true
    colorsPermission: castlewar.colors
    teamChat:
-      enabled: true
-      privateChatFormat: "PV Team | %teamcolor%%teamname% %player%&f: &e%message%"
-      globalChatFormat: "Global | %teamcolor%%teamname% %player%&f: %message%"
-      globalChatPrefix: '@'
+     enabled: true
+     privateChatFormat: '&7[%teamcolor%Private - %teamname%&7] %teamcolor%%player%&f: &e%message%'
+     globalChatFormat: '&7[%teamcolor%%teamname%&7] %player%&f: &f%message%'
+     globalChatPrefix: '@'
 
 teamChooseItem: 
    enabled: true
@@ -52,8 +60,8 @@ kitChooseItem:
    item: BOW,0,&eChoose your kit 
    slot: 1 
    
-lobby_spawnpoint: 0,80,0,10,10
-spectator_spawnpoint: 0,80,-100,10,10
+lobby_spawnpoint: 0,80,0,0,0
+spectator_spawnpoint: 0,80,0,0,0
 
 game_world: "world"
 
@@ -61,15 +69,15 @@ team1:
    name: "Blue"
    color: "&9"
    prefix: "&9BLUE &7"
-   soldier_spawnpoint: 0,80,-100,10,10
-   king_spawnpoint: 0,80,-100,10,10
+   soldier_spawnpoint: 0,80,0,0,0
+   king_spawnpoint: 0,80,0,0,0
    
 team2:
    name: "Red"
    color: "&c"
    prefix: "&cRED &7"
-   soldier_spawnpoint: 0,80,-100,10,10
-   king_spawnpoint: 0,80,-100,10,10
+   soldier_spawnpoint: 0,80,0,0,0
+   king_spawnpoint: 0,80,0,0,0
    
 noTeam:
    name: "&f"

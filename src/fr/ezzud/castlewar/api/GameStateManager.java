@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -20,27 +21,31 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.nametagedit.plugin.NametagEdit;
+
 import fr.ezzud.castlewar.Main;
 import fr.ezzud.castlewar.api.events.CWstartEvent;
-import fr.ezzud.castlewar.methods.CountdownTimer;
 import fr.ezzud.castlewar.methods.RandomUtil;
-import fr.ezzud.castlewar.methods.configManager;
-import fr.ezzud.castlewar.methods.effectManager;
 import fr.ezzud.castlewar.methods.inATeam;
-import fr.ezzud.castlewar.methods.kitManager;
 import fr.ezzud.castlewar.methods.messagesFormatter;
-import fr.ezzud.castlewar.methods.worldManager;
+import fr.ezzud.castlewar.methods.countdowns.CountdownTimer;
+import fr.ezzud.castlewar.methods.managers.configManager;
+import fr.ezzud.castlewar.methods.managers.effectManager;
+import fr.ezzud.castlewar.methods.managers.kitManager;
+import fr.ezzud.castlewar.methods.managers.worldManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class GameStateManager {
 	public static boolean GameState;
 	public Main plugin = Main.getInstance();
 	YamlConfiguration messages = Main.messages;
+	public static String GameStateText;
 	public static String team1King;
 	public static String team2King;
 	public static Player king1Player;
 	public static Player king2Player;
 	public static boolean createParticles;
+	public static Date startDate;
 	public static boolean getGameState() {
 		return GameState;
 	}
@@ -54,7 +59,9 @@ public class GameStateManager {
 	public void stopGame() {
 		Object[] array = Bukkit.getOnlinePlayers().toArray();
 		GameStateManager.GameState = false;
+		GameStateText = "waiting";
 		GameStateManager.createParticles = false;
+		startDate = null;
 		king1Player = null;
 		king2Player = null;
 		team1King = null;
@@ -127,7 +134,7 @@ public class GameStateManager {
 		if(!f.exists()) {
 			worldManager.copyWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world")), plugin.getConfig().getString("game_world") + "-castlewar");
 		}
-		GameState = true;
+		GameStateText = "playing";
 		Object[] array = Bukkit.getOnlinePlayers().toArray();
 		if(array.length < plugin.getConfig().getInt("minPlayers")) {
 			Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("commands.start").getString("notEnough"))));
@@ -175,8 +182,10 @@ public class GameStateManager {
 		team1King = RandomUtil.RandomPlayer(board.getTeam("team1").getEntries());
 		team2King = RandomUtil.RandomPlayer(board.getTeam("team2").getEntries());
 		createParticles = true;
+		startDate = new Date();
 		king1Player = Bukkit.getPlayer(team1King);
 		king2Player = Bukkit.getPlayer(team2King);
+		GameState = true;
 		effectManager em = new effectManager();
 		em.createSpiralAroundPlayer(king1Player);
 		em.createSpiralAroundPlayer(king2Player);
@@ -198,11 +207,22 @@ public class GameStateManager {
 				msgList.toArray(strarray);
 	    		player.sendMessage(strarray);
 				if(plugin.getConfig().getString("rankType").equalsIgnoreCase("prefix")) {
-					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
+					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+						NametagEdit.getApi().setPrefix(team1King, king_rank + NametagEdit.getApi().getNametag(king1Player).getPrefix());
+					} else {
+						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
+					}
+					
+					
 				} else if(plugin.getConfig().getString("rankType").equalsIgnoreCase("suffix")) {
-					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
+					
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
+					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+						NametagEdit.getApi().setSuffix(team1King, king_rank);
+					} else {
+						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
+					}
 				}
 				String[] coords = team1Config.getString("king_spawnpoint").split(",");
 				Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
@@ -219,12 +239,19 @@ public class GameStateManager {
 				msgList.toArray(strarray);
 	    		player.sendMessage(strarray);
 				if(plugin.getConfig().getString("rankType").equalsIgnoreCase("prefix")) {
-					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
-					
+					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+						NametagEdit.getApi().setPrefix(team1King, king_rank + NametagEdit.getApi().getNametag(king2Player).getPrefix());
+					} else {
+						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
+					}
 				} else if(plugin.getConfig().getString("rankType").equalsIgnoreCase("suffix")) {
-					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
+					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+						NametagEdit.getApi().setSuffix(team2King, king_rank);
+					} else {
+						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
+					}
 				}
 				String[] coords = team2Config.getString("king_spawnpoint").split(",");
 				Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
@@ -233,18 +260,28 @@ public class GameStateManager {
 	           
 			} else {
 				if(plugin.getConfig().getString("rankType").equalsIgnoreCase("prefix")) {
-					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', soldier_rank + player.getDisplayName()));
+					
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', soldier_rank + player.getDisplayName()));
+					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+						NametagEdit.getApi().setPrefix(team1King, soldier_rank + NametagEdit.getApi().getNametag(player).getPrefix());
+					} else {
+						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', soldier_rank + player.getDisplayName()));
+					}
 					
 				} else if(plugin.getConfig().getString("rankType").equalsIgnoreCase("suffix")) {
-					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + soldier_rank ));
+					
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + soldier_rank ));
+					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+						NametagEdit.getApi().setSuffix(player, soldier_rank);
+					} else {
+						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + soldier_rank ));
+					}
 					
 				}	
 				if(inATeam.whichTeam(player.getName()).equalsIgnoreCase("team1")) {
 					List<String> msgList = new ArrayList<>();
 					for(String i1 : messages.getConfigurationSection("events.starting").getStringList("soldierMessage")) {
-						msgList.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatTeamMessage(i1 , new CastleTeam("team1"))));
+						msgList.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatTeamMessage(i1 , new CastleTeam("team1")).replace("%king%", new CastleTeam("team1").getKing().getName())));
 					}
 					String[] strarray = new String[msgList.size()];
 					msgList.toArray(strarray);
@@ -255,7 +292,7 @@ public class GameStateManager {
 				} else if(inATeam.whichTeam(player.getName()).equalsIgnoreCase("team2")) {
 					List<String> msgList = new ArrayList<>();
 					for(String i1 : messages.getConfigurationSection("events.starting").getStringList("soldierMessage")) {
-						msgList.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatTeamMessage(i1 , new CastleTeam("team2"))));
+						msgList.add(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatTeamMessage(i1 , new CastleTeam("team2")).replace("%king%", new CastleTeam("team2").getKing().getName())));
 					}
 					String[] strarray = new String[msgList.size()];
 					msgList.toArray(strarray);
@@ -295,6 +332,7 @@ public class GameStateManager {
 		    		        plugin.getConfig().getConfigurationSection("countdowns.starting").getInt("delayBeforeGameStart"),
 		    		        () ->  {
 		    		        	Main.starting = true;
+		    		        	GameStateText = "starting";
 		    		        	String msg = messagesFormatter.formatTimeMessage(messages.getConfigurationSection("events.starting").getString("startingMessage"), plugin.getConfig().getConfigurationSection("countdowns.starting").getInt("delayBeforeGameStart"));
 		    		        	Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		    		        },
@@ -320,10 +358,12 @@ public class GameStateManager {
 			    		        		player.setLevel(0);
 			    		    		}
 			    		        	CountdownTimer.cancelTimer();
+			    		        	GameStateText = "playing";
 		    		        	}
 		    		        	if(Bukkit.getOnlinePlayers().size() < plugin.getConfig().getInt("minPlayers")) {
 		    		        		CountdownTimer.cancelTimer();
 		    		        		Main.starting = false;
+		    		        		GameStateText = "waiting";
 			    		        	for(Player p : Bukkit.getOnlinePlayers()) {
 			    		        		if(Main.starting == false) {
 			    		        			p.setLevel(0);
@@ -335,11 +375,14 @@ public class GameStateManager {
 		    		        	if(Bukkit.getOnlinePlayers().size() == plugin.getConfig().getInt("maxPlayers")) {
 		    		        		t.reduceTimer(plugin.getConfig().getConfigurationSection("countdowns.starting").getInt("reducedDelayIfMaxPlayers"));
 		    		        	}
+		    		        	
 		    		        	for(Player p : Bukkit.getOnlinePlayers()) {
 		    		        		if(GameStateManager.GameState == true) {
 		    		        			p.setLevel(0);
+		    		        			GameStateText = "playing";
 		    		        		} else {
 		    		        			p.setLevel(t.getSecondsLeft());
+		    		        			GameStateText = "starting";
 		    		        		}
 		    		        		
 		    		        	}

@@ -12,7 +12,7 @@ public class stopCMD {
 	static Main plugin = Main.getInstance();
 	YamlConfiguration messages = Main.messages;
 	public stopCMD(Player player) {
-		if (player.hasPermission("castlewars.stop") || player.isOp()) {
+		if (player.hasPermission("castlewars.admin.stop") || player.isOp()) {
 			if(GameStateManager.getGameState() == true) {
 				new GameStateManager().stopGame();
 				player.sendMessage(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getConfigurationSection("commands.stop").getString("successfull"))));

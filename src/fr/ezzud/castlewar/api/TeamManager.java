@@ -9,6 +9,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
+import com.nametagedit.plugin.NametagEdit;
 import fr.ezzud.castlewar.Main;
 
 public class TeamManager {
@@ -47,18 +48,12 @@ public class TeamManager {
 		
 		Team team1 = board.registerNewTeam("team1");
 		team1.addEntry("team1");
-		team1.setPrefix(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getPrefix()));
-		team1.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + TeamManager.getTeam1().getName()));
-		team1.setColor(ChatColor.getByChar(TeamManager.getTeam1().getColor().charAt(1)));
 		team1.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
 		team1.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
 		team1.setAllowFriendlyFire(false);
 		
 		Team team2 = board.registerNewTeam("team2");
 		team2.addEntry("team2");
-		team2.setPrefix(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getPrefix()));
-		team2.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + TeamManager.getTeam2().getName()));
-		team2.setColor(ChatColor.getByChar(TeamManager.getTeam2().getColor().charAt(1)));
 		team2.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
 		team2.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS);
 		team2.setAllowFriendlyFire(false);
@@ -71,15 +66,22 @@ public class TeamManager {
 			Team team_ = board.getTeam(team);
 			team_.addEntry(player.getName());
 			if(team.equals("team1")) {
-				player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getPrefix() + player.getName()));
+				
 				player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getPrefix() + player.getName()));
-				player.setCustomName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getPrefix() + player.getName()));
-				player.setCustomNameVisible(true);
+				if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+					NametagEdit.getApi().setPrefix(player, TeamManager.getTeam1().getPrefix());
+				} else {
+					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getPrefix() + player.getName()));
+				}
+				
 			} else {
-				player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getPrefix() + player.getName()));
+				
 				player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getPrefix() + player.getName()));
-				player.setCustomName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getPrefix() + player.getName()));
-				player.setCustomNameVisible(true);
+				if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+					NametagEdit.getApi().setPrefix(player, TeamManager.getTeam2().getPrefix());
+				} else {
+					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getPrefix() + player.getName()));
+				}
 			}
 			
 		}
@@ -90,8 +92,13 @@ public class TeamManager {
 		if(board.getTeam(team) != null) {
 			Team team_ = board.getTeam(team);
 			team_.removeEntry(player.getName());
-			player.setPlayerListName(player.getName());
+			
 			player.setDisplayName(player.getName());
+			if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+				NametagEdit.getApi().clearNametag(player);
+			} else {
+				player.setPlayerListName(player.getName());
+			}
 		}
 	}
 
@@ -100,6 +107,11 @@ public class TeamManager {
 		ScoreboardManager manager = Bukkit.getScoreboardManager();
 		Scoreboard board = manager.getNewScoreboard();
 		if(board.getTeam(team) != null) {
+			for(String i: board.getTeam(team).getEntries()) {
+				if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+					NametagEdit.getApi().clearNametag(Bukkit.getPlayer(i));
+				}
+			}
 			board.getTeam(team).unregister();	
 			board.registerNewTeam(team);
 		}

@@ -47,3 +47,9 @@ chooseKit:
          position: 12
          lore:
          - "&bLine1"
+      1: 
+         item: BOW,0,&eArcher Kit
+         kit: archer
+         position: 14
+         lore:
+         - "&bLine1"

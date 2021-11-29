@@ -45,7 +45,7 @@ public class PlaceBreak implements Listener {
 	   @EventHandler
 	   public void onExplode(EntityExplodeEvent event) {
 		   if(event.isCancelled() == true) return;
-		   if(GameStateManager.getGameState() == false) return;
+		   if(GameStateManager.getGameState() == false) event.setCancelled(true);
 		   ConfigurationSection config = plugin.getConfig().getConfigurationSection("gameRules");
 		   if(config.getBoolean("explosions") == false) {
 			   event.setCancelled(true);

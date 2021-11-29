@@ -1,0 +1,138 @@
+commands:
+   prefix: "&e[&6CastleWar&e]"
+   noPermission: "%prefix% &cYou don't have the permission to do that!"
+   help:
+      header: "&7----------&r &6CastleWars v%version% &7----------"
+      noAdmin:
+         - "&e/cw help &7- See this message"
+         - "&e/cw list &7- See the two kings"
+         - "&e/cw kits &7- Open the Kit Selection menu"
+         - "&e/cw team &7- See your team members"
+         - "&e/cw menu &7- Open the team menu"
+         
+      admin:
+         - "&c/cw setlobby &7- Set the lobby of the game"
+         - "&c/cw setspawn <team> <unit> &7- Set the spawnpoint for kings & soldiers"
+         - "&c/cw start &7- ForceStart the game"
+         - "&c/cw stop &7- ForceStop the game"
+      footer: "&7-------------------------------------"
+   reload:
+      successfull: "%prefix% &aThe plugin has been sucessfully reloaded"
+   setlobby:
+      world_changed: "%prefix% &aLobby coordinates has been sucessfully set! Game World is now: %world%"   
+      world_unchanged: "%prefix% &aLobby coordinates has been sucessfully set!"   
+   setspawn:
+      specifyTeam: "%prefix% &cPlease specify a team (team1, team2, spectators)"
+      specifyUnit: "%prefix% &cPlease specify a type of unit (king, soldier)"
+      king: "%prefix% &aKing's spawnpoint of the team %teamcolor%%teamname% &ahas been sucessfully set!"
+      soldier: "%prefix% &aSoldiers's spawnpoint of the team %teamcolor%%teamname% &ahas been sucessfully set!"
+      spectators: "%prefix% &7Spectators&a's spawnpoint has been sucessfully set!"
+   start:
+      successfull: "%prefix% &aGame sucessfully started"
+      alreadyStarted: "%prefix% &cGame is already started"
+      notEnough: "%prefix% &cNot enough players to start"
+   stop:
+      successfull: "%prefix% &aGame sucessfully stopped"
+      alreadyStopped: "%prefix% &cGame is already stopped"
+events:
+   starting:
+      startingMessage: "%prefix% &eGame is starting in &7%seconds% &eseconds"
+      startedMessage: "%prefix% &aGame started, Good luck!"
+      kingMessage:
+         - "%prefix% &7You are the &e&lKING &7of the team %teamcolor%%teamname%"
+         - "&6Objective: &7Survive and kill the enemy king"
+      soldierMessage:
+         - "%prefix% &7You are a &8&lSOLDIER &7of the team %teamcolor%%teamname%"
+         - "&6Objective: &7Protect your king and kill the enemy king"
+         - "&7Your king is %teamcolor%&l%king%"  
+   kitMessage: "%prefix% &eYou got the %kitname% &ekit" 
+   teamChange:
+      join: "%prefix% &eYou joined the team %teamcolor%%teamname%"
+      leave: "%prefix% &eYou left your team"
+   death:
+      soldier:
+         message: 
+            byPlayer: "%prefix% &cYou got killed by %killer%"
+            other: "%prefix% &cYou are dead"
+            respawned: "%prefix% &aYou have respawned!"
+         title:
+            main: "&eRespawning in..."
+            subtitle: "&c%seconds%" 
+      king:
+         message:
+            byPlayer: "%prefix% &eThe king &6&l%player% &ehas been killed by &3%killer%" 
+            other: "%prefix% &6&l%player% &ehas been killed" 
+            leave: "%prefix% &cGame has been stopped because a king left the game"
+         victoryMessage: "%prefix% &aVictory of the team %teamcolor%%teamname%" 
+      restartingIn: "%prefix% &eRestarting in &c%seconds% &eseconds"
+      
+kits: 
+   notExist: "%prefix% &cThis kit doesn't exists!" 
+   kitChange: "%prefix% &eYou selected the %kitname% &ekit"
+   noPermission: "%prefix% &cYou don't have permission to use this kit"   
+   alreadySelected: "%prefix% &cKit already selected"
+
+teams:
+   full: "%prefix% &cTeam is full"
+   notBalanced: "%prefix% &cTeams are not balanced"  
+   
+gui:
+   kits:
+      noPermission: "&cYou don't have permission to use this kit!"
+      alreadySelected: "&cKit already selected"
+      select: "&aClick to select this kit!"
+   team:
+      alreadyInTeam: "&cYou are already in this team"
+      full: "&cTeam is full!"
+      join: "&aClick to join the team"
+      teamListFormat: "&e- %player%"
+      
+gamestates:
+   waiting: "&cWaiting &7(%playercount%/%maxplayers%)"
+   starting: "&eStarting..."
+   playing: "&aPlaying!"
+   ending: "&6Ending..."
+   
+   
+scoreboard:
+   ranks:
+      king: "&6KING"
+      soldier: "&7SOLDIER"
+   king:
+      title: "&7---- &eCastleWar &7----"
+      lines:
+         - "&7State: &e%gamestate%"
+         - ""
+         - "&7Your Team: %teamcolor%%teamname%"
+         - "&7Your Rank: %rank%"
+         - "&7Your kit: &e%kitname%"
+         - ""
+      footer: "&7Duration: &e%h%:%m%:%s%" 
+   soldier:
+      title: "&7---- &eCastleWar &7----"
+      lines:
+         - "&7State: &e%gamestate%"
+         - ""
+         - "&7Your Team: %teamcolor%%teamname%"
+         - "&7Your Rank: %rank%"
+         - "&7Your kit: &e%kitname%"
+         - "&6%kingname% &7(&c%kinghealth%&7)" 
+         - ""
+      footer: "&7Duration: &e%h%:%m%:%s%" 
+   spectator:
+      title: "&7---- &eCastleWar &7----"
+      lines:
+         - "&7State: &e%gamestate%"
+         - ""
+         - "&7%team1color%%team1name%: %king1health%"
+         - "&7%team2color%%team2name%: %king2health%"
+         - ""
+      footer: "&7Duration: &e%h%:%m%:%s%" 
+   lobby:
+      title: "&7---- &eCastleWar &7----"
+      lines:
+         - ""
+         - "&7State: &e%gamestate%"
+         - "&7Your kit: &e%kitname%"
+         - ""
+      footer: "&7ezzud.fr" 

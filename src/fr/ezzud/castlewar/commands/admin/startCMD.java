@@ -13,7 +13,7 @@ public class startCMD {
 	static Main plugin = Main.getInstance();
 	YamlConfiguration messages = Main.messages;
 	public startCMD(Player player) {
-		if (player.hasPermission("castlewars.start") || player.isOp()) {
+		if (player.hasPermission("castlewars.admin.start") || player.isOp()) {
 			if(GameStateManager.getGameState() == false) {
 				Object[] array = Bukkit.getOnlinePlayers().toArray();
 				if(array.length < plugin.getConfig().getInt("minPlayers")) {
