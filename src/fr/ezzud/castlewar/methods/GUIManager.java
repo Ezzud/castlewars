@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -90,8 +89,7 @@ public class GUIManager {
 
         }
 	}
-    @SuppressWarnings("deprecation")
-	public void initializeTeamGUI(Inventory inv) {
+    public void initializeTeamGUI(Inventory inv) {
     	Scoreboard board = Main.board;
     	ConfigurationSection team1Item = guis.getConfigurationSection("chooseTeam.chooseItems.team1");
     	ConfigurationSection team2Item = guis.getConfigurationSection("chooseTeam.chooseItems.team2");
@@ -150,8 +148,8 @@ public class GUIManager {
     	String[] team2Info = team2Item.getString("item").split(",");
  	   	List<String> team2List = new ArrayList<String>();
  	   List<String> team2Team = new ArrayList<>();
- 	   for(OfflinePlayer pl : board.getTeam("team2").getPlayers()) {
- 		   team2Team.add(pl.getName());
+ 	   for(String pl : board.getTeam("team2").getEntries()) {
+ 		   team2Team.add(pl);
  	   }
   	   List<String> team22team = new ArrayList<String>();
  	   if(inATeam.checkSpecificTeam(player.getName(), "team2") == true) {

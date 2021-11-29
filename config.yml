@@ -10,6 +10,7 @@ gameRules:
    allowBreak: true
    foodLoss: false
    explosions: true
+   endFireworks: true
 
 joinLeaveMessages:
    enabled: true

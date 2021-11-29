@@ -109,7 +109,6 @@ public class Main extends JavaPlugin implements Listener {
 		if(Bukkit.getOnlinePlayers() != null && Bukkit.getOnlinePlayers().size() > 0) {
 			new GameStateManager().stopGame();
 		}
-		new GameStateManager().checkStart();
 	}
 	
 	

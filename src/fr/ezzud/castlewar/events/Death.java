@@ -3,6 +3,7 @@ package fr.ezzud.castlewar.events;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -17,13 +18,15 @@ import fr.ezzud.castlewar.Main;
 import fr.ezzud.castlewar.api.CastlePlayer;
 import fr.ezzud.castlewar.api.CastleTeam;
 import fr.ezzud.castlewar.api.GameStateManager;
+import fr.ezzud.castlewar.api.TeamManager;
 import fr.ezzud.castlewar.api.events.CWKillEvent;
 import fr.ezzud.castlewar.api.events.CWendEvent;
 import fr.ezzud.castlewar.methods.CountdownTimer;
 import fr.ezzud.castlewar.methods.EndCountdownTimer;
+import fr.ezzud.castlewar.methods.FWCountdownTimer;
+import fr.ezzud.castlewar.methods.FWManager;
 import fr.ezzud.castlewar.methods.inATeam;
 import fr.ezzud.castlewar.methods.messagesFormatter;
-import net.md_5.bungee.api.ChatColor;
 
 
 public class Death implements Listener {
@@ -69,7 +72,30 @@ public class Death implements Listener {
 					   }
 					   String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.death.king").getString("victoryMessage"), new CastleTeam("team2"));
 					   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+					   if(plugin.getConfig().getConfigurationSection("gameRules").getBoolean("endFireworks") == true) {
+						   FWCountdownTimer FWtimer = new FWCountdownTimer(plugin,
+			  		    			6,
+					    		        () ->  {
+					    		        },
+					    		        () -> {    
+					    		        	FWCountdownTimer.cancelTimer();
+		    		        	
+					    		        },
+					    		        (t) -> {
+					    		        	for(Player p : Bukkit.getOnlinePlayers()) {
+					    		        		if(inATeam.whichTeam(p.getName()).equalsIgnoreCase("team2") ) {
+							    		        	if(t.getSecondsLeft() % 2 == 0) {
+							    		        		ChatColor teamColor = ChatColor.getByChar(TeamManager.getTeam2().getColor().charAt(1));
+							    		        		FWManager.spawnFireworks(p.getLocation(), 1, FWManager.translateChatColorToColor(teamColor));
+							    		        	}
+					    		        		}
+					    		        	}
 
+					    		        }
+
+					    		);
+			  		    	FWtimer.scheduleTimer();						   
+					   }
 	        			CWendEvent event = new CWendEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()), "leave");
 						Bukkit.getPluginManager().callEvent(event);	
 		  		    	  EndCountdownTimer timer = new EndCountdownTimer(plugin,
@@ -115,6 +141,30 @@ public class Death implements Listener {
 						   }
 						   String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.death.king").getString("victoryMessage"), new CastleTeam("team1"));
 						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+						   if(plugin.getConfig().getConfigurationSection("gameRules").getBoolean("endFireworks") == true) {
+							   FWCountdownTimer FWtimer = new FWCountdownTimer(plugin,
+				  		    			6,
+						    		        () ->  {
+						    		        },
+						    		        () -> {    
+						    		        	FWCountdownTimer.cancelTimer();
+			    		        	
+						    		        },
+						    		        (t) -> {
+						    		        	for(Player p : Bukkit.getOnlinePlayers()) {
+						    		        		if(inATeam.whichTeam(p.getName()).equalsIgnoreCase("team1") ) {
+								    		        	if(t.getSecondsLeft() % 2 == 0) {
+								    		        		ChatColor teamColor = ChatColor.getByChar(TeamManager.getTeam1().getColor().charAt(1));
+								    		        		FWManager.spawnFireworks(p.getLocation(), 1, FWManager.translateChatColorToColor(teamColor));
+								    		        	}
+						    		        		}
+						    		        	}
+
+						    		        }
+
+						    		);
+				  		    	FWtimer.scheduleTimer();
+						   }
 		        			CWendEvent event = new CWendEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()), "leave");
 							Bukkit.getPluginManager().callEvent(event);	
 			  		    	  CountdownTimer timer = new CountdownTimer(plugin,
