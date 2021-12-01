@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -26,6 +27,8 @@ import fr.ezzud.castlewar.events.Interaction;
 import fr.ezzud.castlewar.events.Join;
 import fr.ezzud.castlewar.events.Leave;
 import fr.ezzud.castlewar.events.PlaceBreak;
+import fr.ezzud.castlewar.events.Spawn;
+import fr.ezzud.castlewar.events.VoidTP;
 import fr.ezzud.castlewar.events.onInvClick;
 import fr.ezzud.castlewar.events.onInvDrag;
 import fr.ezzud.castlewar.methods.managers.ScoreboardManager;
@@ -101,11 +104,17 @@ public class Main extends JavaPlugin implements Listener {
 		pm.registerEvents(new Death(this), this);
 		pm.registerEvents(new Chat(this), this);
 		pm.registerEvents(new PlaceBreak(this), this);
+		pm.registerEvents(new VoidTP(this), this);
+		pm.registerEvents(new Spawn(this), this);
 		this.getCommand("castlewar").setExecutor(new CommandHandler());
 		this.getCommand("castlewar").setTabCompleter(new TabCompletion());
 		File f = new File(plugin.getConfig().getString("game_world") + "-castlewar");
 		if(!f.exists()) {
+			if(!plugin.getConfig().getString("game_world").equalsIgnoreCase("world") && Bukkit.getWorld(plugin.getConfig().getString("game_world")) == null) {
+				new WorldCreator(plugin.getConfig().getString("game_world")).createWorld();
+			}
 			worldManager.copyWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world")), plugin.getConfig().getString("game_world") + "-castlewar");
+			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &aCopying new world"));
 		}
 		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &aSuccessfully loaded plugin!"));
 		if(Bukkit.getOnlinePlayers() != null && Bukkit.getOnlinePlayers().size() > 0) {
