@@ -108,7 +108,7 @@ public class Join implements Listener {
         		if(inATeam.checkTeam(player.getName()) == false) {
         			player.setGameMode(GameMode.SPECTATOR);
             		String[] coordsStr = plugin.getConfig().getString("spectator_spawnpoint").split(",");
-            		Location coords = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world")), Double.parseDouble(coordsStr[0]), Double.parseDouble(coordsStr[1]), Double.parseDouble(coordsStr[2]), Float.parseFloat(coordsStr[3]), Float.parseFloat(coordsStr[4]));
+            		Location coords = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coordsStr[0]), Double.parseDouble(coordsStr[1]), Double.parseDouble(coordsStr[2]), Float.parseFloat(coordsStr[3]), Float.parseFloat(coordsStr[4]));
             		player.teleport(coords);
         		} else {
 					   player.setGameMode(GameMode.SPECTATOR);

@@ -1,5 +1,6 @@
 package fr.ezzud.castlewar.events;
 
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,7 +43,22 @@ public class Damage implements Listener {
 					   
 				   }
 			   }
+			   if(event.getDamager() instanceof Arrow) {
+				   Arrow arrow = (Arrow) event.getDamager();
+				   if(arrow.getShooter() instanceof Player) {
+					   Player shooter = (Player) ((Arrow) arrow).getShooter();
+					   Player target = (Player) event.getEntity();
+					   if(inATeam.whichTeam(shooter.getName()).equals(inATeam.whichTeam(target.getName()))) {
+						   if(event.isCancelled() == false) {
+							   event.setCancelled(true);  
+						   }
+						   
+					   }
+				   }
+			   }
 		   }
+		   
+
 	   }
 	
 }

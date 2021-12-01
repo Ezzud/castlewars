@@ -147,6 +147,9 @@ public class VoidTP implements Listener {
 			    		  player.setDisplayName(ChatColor.RESET + player.getName());
 			    		  player.setPlayerListName(ChatColor.RESET + player.getName());
 			    	  });
+			    	  String[] coordinates = plugin.getConfig().getString("spectator_spawnpoint").split(",");
+					  Location location = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1]), Double.parseDouble(coordinates[2]), Float.parseFloat(coordinates[3]), Float.parseFloat(coordinates[3]));
+			    	  victim.teleport(location);
 						   String msg = messagesFormatter.formatKillMessage(messages.getConfigurationSection("events.death.king.message").getString("other"), victim, null);
 						   Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		        			CWKillEvent killEvent = new CWKillEvent(null, new CastlePlayer(victim.getName()));
@@ -223,6 +226,9 @@ public class VoidTP implements Listener {
 				   victim.setGameMode(GameMode.SPECTATOR);
 					ConfigurationSection team1Config = plugin.getConfig().getConfigurationSection("team1");
 					ConfigurationSection team2Config = plugin.getConfig().getConfigurationSection("team2");
+			    	  String[] coordinates = plugin.getConfig().getString("spectator_spawnpoint").split(",");
+					  Location location = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1]), Double.parseDouble(coordinates[2]), Float.parseFloat(coordinates[3]), Float.parseFloat(coordinates[3]));
+			    	  victim.teleport(location);
 	  		    	  CountdownTimer timer = new CountdownTimer(plugin,
 	  		    			plugin.getConfig().getConfigurationSection("countdowns").getInt("respawnDelay"),
 			    		        () ->  {

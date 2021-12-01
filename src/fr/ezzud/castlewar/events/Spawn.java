@@ -140,6 +140,9 @@ public class Spawn implements Listener {
 			  	case SKELETON_HORSE:
 			  		event.setCancelled(true);
 			  		break;
+			  	case DONKEY:
+			  		event.setCancelled(true);
+			  		break;
 			  	case ZOMBIE_HORSE:
 			  		event.setCancelled(true);
 			  		break;
