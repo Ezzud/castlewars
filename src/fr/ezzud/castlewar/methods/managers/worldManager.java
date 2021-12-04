@@ -16,6 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class worldManager {
 	private static void copyFileStructure(File source, File target){
 	    try {
@@ -52,6 +54,14 @@ public class worldManager {
     }
 	
 	public static void copyWorld(World originalWorld, String newWorldName) {
+		if(originalWorld == null) {
+			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &cUnable to copy world! Initial world missing!"));
+			return;
+		}
+		if(newWorldName == null) {
+			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &cUnable to copy world! New world name missing!"));
+			return;
+		}
         copyFileStructure(originalWorld.getWorldFolder(), new File(Bukkit.getWorldContainer(), newWorldName));
         new WorldCreator(newWorldName).createWorld();
 	}

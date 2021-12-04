@@ -11,6 +11,9 @@ gameRules:
    foodLoss: false
    explosions: true
    endFireworks: true
+   mobSpawning: false
+   animalSpawning: false
+   voidKill: true
    
 endCommands:
    win:

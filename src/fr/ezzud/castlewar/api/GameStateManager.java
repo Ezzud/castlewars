@@ -117,12 +117,15 @@ public class GameStateManager {
 				File f = new File(plugin.getConfig().getString("game_world") + "-castlewar");
 				if(f.exists()) {
 					worldManager.unloadWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"));
+					Bukkit.unloadWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world")  + "-castlewar"), false);
 					try {
 						Path path = Paths.get(plugin.getConfig().getString("game_world") + "-castlewar");
 						worldManager.deleteDirectoryStream(path);
 					} catch (IOException e) {
 						e.printStackTrace();
-					}		
+					}	
+					
+					
 				}
 		}
 	}
@@ -209,7 +212,7 @@ public class GameStateManager {
 				if(plugin.getConfig().getString("rankType").equalsIgnoreCase("prefix")) {
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
 					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
-						NametagEdit.getApi().setPrefix(team1King, king_rank + NametagEdit.getApi().getNametag(king1Player).getPrefix());
+						NametagEdit.getApi().setPrefix(team1King, ChatColor.translateAlternateColorCodes('&', king_rank) + NametagEdit.getApi().getNametag(king1Player).getPrefix());
 					} else {
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
 					}
@@ -219,7 +222,7 @@ public class GameStateManager {
 					
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
 					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
-						NametagEdit.getApi().setSuffix(team1King, king_rank);
+						NametagEdit.getApi().setSuffix(team1King, ChatColor.translateAlternateColorCodes('&', king_rank));
 					} else {
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
 					}
@@ -241,14 +244,14 @@ public class GameStateManager {
 				if(plugin.getConfig().getString("rankType").equalsIgnoreCase("prefix")) {
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
 					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
-						NametagEdit.getApi().setPrefix(team1King, king_rank + NametagEdit.getApi().getNametag(king2Player).getPrefix());
+						NametagEdit.getApi().setPrefix(team1King, ChatColor.translateAlternateColorCodes('&', king_rank) + NametagEdit.getApi().getNametag(king2Player).getPrefix());
 					} else {
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', king_rank + player.getDisplayName()));
 					}
 				} else if(plugin.getConfig().getString("rankType").equalsIgnoreCase("suffix")) {
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
 					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
-						NametagEdit.getApi().setSuffix(team2King, king_rank);
+						NametagEdit.getApi().setSuffix(team2King, ChatColor.translateAlternateColorCodes('&', king_rank));
 					} else {
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + king_rank));
 					}
@@ -263,7 +266,7 @@ public class GameStateManager {
 					
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', soldier_rank + player.getDisplayName()));
 					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
-						NametagEdit.getApi().setPrefix(team1King, soldier_rank + NametagEdit.getApi().getNametag(player).getPrefix());
+						NametagEdit.getApi().setPrefix(team1King, ChatColor.translateAlternateColorCodes('&', soldier_rank) + NametagEdit.getApi().getNametag(player).getPrefix());
 					} else {
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', soldier_rank + player.getDisplayName()));
 					}
@@ -272,7 +275,7 @@ public class GameStateManager {
 					
 					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + soldier_rank ));
 					if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
-						NametagEdit.getApi().setSuffix(player, soldier_rank);
+						NametagEdit.getApi().setSuffix(player, ChatColor.translateAlternateColorCodes('&', soldier_rank));
 					} else {
 						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getDisplayName() + soldier_rank ));
 					}
