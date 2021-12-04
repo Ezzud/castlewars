@@ -1,6 +1,6 @@
 name: CastleWars
 main: fr.ezzud.castlewar.Main
-version: 1.0.1
+version: 1.0.3
 author: Ezzud
 commands:
   castlewar:

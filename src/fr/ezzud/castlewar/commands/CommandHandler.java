@@ -14,6 +14,7 @@ import fr.ezzud.castlewar.commands.admin.setSpawnCMD;
 import fr.ezzud.castlewar.commands.admin.startCMD;
 import fr.ezzud.castlewar.commands.admin.stopCMD;
 import fr.ezzud.castlewar.commands.players.helpCMD;
+import fr.ezzud.castlewar.commands.players.kingsCMD;
 import fr.ezzud.castlewar.commands.players.kitsCMD;
 import fr.ezzud.castlewar.commands.players.teamCMD;
 import fr.ezzud.castlewar.methods.inATeam;
@@ -36,6 +37,10 @@ public class CommandHandler implements CommandExecutor {
 	   				new teamCMD(player);
 	   			}
 	   			break;
+	   		case "kings":
+	   			if(GameStateManager.getGameState() == true) {
+	   				new kingsCMD(player);
+	   			}
 	   		case "reload":
 	   			new reloadCMD(player);
 	   			break;
@@ -43,7 +48,6 @@ public class CommandHandler implements CommandExecutor {
 	   			if(inATeam.isKing(player.getName()) == false) {
 	   				new kitsCMD(player);
 	   			}
-	   			
 	   			break;
 	   		case "start":
 	   			new startCMD(player);

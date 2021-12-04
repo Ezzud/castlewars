@@ -287,9 +287,9 @@ public class Death implements Listener {
 	   
 	   @EventHandler
 	   public void onDamageNoEntity(EntityDamageEvent event) {
-		   if(!(event.getEntity() instanceof Player)) return; 
+		   if(event.getEntity() instanceof Player) {	   
 			Player victim = (Player) event.getEntity();
-			if(victim.getHealth() - event.getDamage() < 1) {
+			if(victim.getHealth() - event.getDamage() <= 0) {
 				event.setCancelled(true);
 			   YamlConfiguration messages = Main.messages;
 			   if(victim.getName().equalsIgnoreCase(GameStateManager.team1King)) {
@@ -513,6 +513,7 @@ public class Death implements Listener {
 			    		);
 			    	  timer.scheduleTimer();
 			   }
+			}
 		   }
 	   }
 }

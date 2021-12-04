@@ -46,6 +46,7 @@ public class VoidTP implements Listener {
 		   if(config.getBoolean("voidKill") == false) return;
 		   if(event.getTo().getY() < 1) {
 			   Player victim = event.getPlayer();
+			   if(victim.getGameMode() == GameMode.SPECTATOR) return;
 			   YamlConfiguration messages = Main.messages;
 			   if(victim.getName().equalsIgnoreCase(GameStateManager.team1King)) {
 				   GameStateManager.GameState = false;

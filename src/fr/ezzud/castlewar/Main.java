@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -31,6 +32,7 @@ import fr.ezzud.castlewar.events.Spawn;
 import fr.ezzud.castlewar.events.VoidTP;
 import fr.ezzud.castlewar.events.onInvClick;
 import fr.ezzud.castlewar.events.onInvDrag;
+import fr.ezzud.castlewar.methods.checkUpdate;
 import fr.ezzud.castlewar.methods.managers.ScoreboardManager;
 import fr.ezzud.castlewar.methods.managers.configManager;
 import fr.ezzud.castlewar.methods.managers.worldManager;
@@ -77,20 +79,21 @@ public class Main extends JavaPlugin implements Listener {
 		manager = plugin.getServer().getScoreboardManager();
 		board = manager.getMainScoreboard();
 		this.saveDefaultConfig();
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bconfig.yml &aloaded"));
-		configManager.saveKits();
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bkits.yml &aloaded"));
-		kits = configManager.getKits();
-		new TeamManager().initializeTeams();
-		configManager.saveGUIs();
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bguis.yml &aloaded"));
-		guis = configManager.getGUIs();
-		configManager.saveData();
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bdata.yml &aloaded"));
-		data = configManager.getData();
 		configManager.saveMessages();
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &bmessages.yml &aloaded"));
 		messages = configManager.getMessages();
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &bmessages.yml &aloaded"));
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &bconfig.yml &aloaded"));
+		configManager.saveKits();
+		kits = configManager.getKits();
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &bkits.yml &aloaded"));
+		configManager.saveGUIs();
+		guis = configManager.getGUIs();
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &bguis.yml &aloaded"));
+		configManager.saveData();
+		data = configManager.getData();
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &bdata.yml &aloaded"));
+		
+		new TeamManager().initializeTeams();
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(this, this);
 		pm.registerEvents(new onInvClick(this), this);
@@ -114,14 +117,16 @@ public class Main extends JavaPlugin implements Listener {
 				new WorldCreator(plugin.getConfig().getString("game_world")).createWorld();
 			}
 			worldManager.copyWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world")), plugin.getConfig().getString("game_world") + "-castlewar");
-			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &aCopying new world"));
+			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &aCopying new world"));
 		}
-		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &aSuccessfully loaded plugin!"));
+		Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &aSuccessfully loaded plugin!"));
 		if(Bukkit.getOnlinePlayers() != null && Bukkit.getOnlinePlayers().size() > 0) {
 			new GameStateManager().stopGame();
 		}
 		scoreboardManager = new ScoreboardManager();
 		this.startUpdateTask();
+		this.checkVersion();
+		
 		}
 	
 	
@@ -131,7 +136,7 @@ public class Main extends JavaPlugin implements Listener {
 		File f = new File(plugin.getConfig().getString("game_world") + "-castlewar");
 		if(f.exists()) {
 			worldManager.unloadWorld(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"));
-			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&6[&eCastleWars&6] &cSuccessfully unloaded plugin!"));
+			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &cSuccessfully unloaded plugin!"));
 			try {
 				Path path = Paths.get(plugin.getConfig().getString("game_world") + "-castlewar");
 				worldManager.deleteDirectoryStream(path);
@@ -147,5 +152,25 @@ public class Main extends JavaPlugin implements Listener {
 		Bukkit.getScheduler().runTaskTimer(this, () -> {
 			scoreboardManager.getPlayerScoreboards().values().forEach((scoreboard) -> scoreboard.update());
 		}, 0L, 20L); // Very fast, every tick.
+	}
+	
+	
+	private void checkVersion() {
+		if(this.getConfig().getBoolean("checkForUpdate") == false) return;
+		String version = checkUpdate.getTextFromGithub("https://raw.githubusercontent.com/Ezzud/castlewars/main/plugin.yml");
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.loadFromString(version);
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		String lastVersion = config.getString("version");
+		String actualVersion = this.getDescription().getVersion();
+		if(lastVersion.equalsIgnoreCase(actualVersion)) {
+			Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &aYou are using the latest version of CastleWars! (&e" + actualVersion + "&a)"));
+		} else {
+			Bukkit.getLogger().warning(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &cYou are using an outdated version of CastleWars! (&e" + actualVersion + "&c)"));
+			Bukkit.getLogger().warning(ChatColor.translateAlternateColorCodes('&', messages.getString("commands.prefix") + " &cPlease update the plugin to the &a" + lastVersion + " &c!"));
+		}
 	}
 }
