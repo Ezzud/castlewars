@@ -46,6 +46,7 @@ public class CommandHandler implements CommandExecutor {
 	   			if(GameStateManager.getGameState() == true) {
 	   				new kingsCMD(player);
 	   			}
+	   			break;
 	   		case "reload":
 	   			new reloadCMD(player);
 	   			break;
