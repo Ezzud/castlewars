@@ -15,11 +15,13 @@ gameRules:
    animalSpawning: false
    voidKill: true
   
+  
+# Sound format: SOUND NAME,VOLUME,PITCH
 sounds:
-   start:
-   death:
-   respawn:
-   countdown:
+   start: ENTITY_ENDER_DRAGON_GROWL,100,1
+   death: ENTITY_WITHER_DEATH,100,100
+   respawn: ENTITY_PLAYER_LEVELUP,100,1
+   countdown: ENTITY_EXPERIENCE_ORB_PICKUP,100,1
    
 endCommands:
    win:

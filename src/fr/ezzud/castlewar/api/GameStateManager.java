@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.Statistic;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -88,8 +89,12 @@ public class GameStateManager {
 			   	player.setSaturation(20);
 			   	player.setLevel(0);
 			   	player.setExp(0);
-			   	player.setDisplayName(player.getName());
-			   	player.setPlayerListName(player.getName());
+    			if(Bukkit.getServer().getPluginManager().getPlugin("NameTagEdit") != null) {
+    				NametagEdit.getApi().clearNametag(player);
+    			} else {
+    				player.setDisplayName(player.getName());
+    			   	player.setPlayerListName(player.getName());
+    			}	
 			   	player.setStatistic(Statistic.TIME_SINCE_REST, 0);
 			   	
 			   	ConfigurationSection teamItem = plugin.getConfig().getConfigurationSection("teamChooseItem");
@@ -230,6 +235,8 @@ public class GameStateManager {
 				String[] coords = team1Config.getString("king_spawnpoint").split(",");
 				Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 				player.teleport(loc);
+    			String[] sound = plugin.getConfig().getString("sounds.start").split(",");
+        		player.playSound(loc, Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 				new kitManager().setKingKit(player);
 				
 				
@@ -259,6 +266,8 @@ public class GameStateManager {
 				String[] coords = team2Config.getString("king_spawnpoint").split(",");
 				Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 				player.teleport(loc);
+    			String[] sound = plugin.getConfig().getString("sounds.start").split(",");
+        		player.playSound(loc, Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 				new kitManager().setKingKit(player);
 	           
 			} else {
@@ -292,6 +301,9 @@ public class GameStateManager {
 					String[] coords = team1Config.getString("soldier_spawnpoint").split(",");
 					Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 					player.teleport(loc);
+	    			String[] sound = plugin.getConfig().getString("sounds.start").split(",");
+	        		player.playSound(loc, Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
+	        		new kitManager().setPlayerKit(player);
 				} else if(inATeam.whichTeam(player.getName()).equalsIgnoreCase("team2")) {
 					List<String> msgList = new ArrayList<>();
 					for(String i1 : messages.getConfigurationSection("events.starting").getStringList("soldierMessage")) {
@@ -303,6 +315,9 @@ public class GameStateManager {
 					String[] coords = team2Config.getString("soldier_spawnpoint").split(",");
 					Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 					player.teleport(loc);
+	    			String[] sound = plugin.getConfig().getString("sounds.start").split(",");
+	        		player.playSound(loc, Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
+	        		new kitManager().setPlayerKit(player);
 				}
 
 
@@ -316,7 +331,7 @@ public class GameStateManager {
 					}
 	    			Main.data = configManager.getData();
 				}
-				new kitManager().setPlayerKit(player);
+				
     			CWstartEvent event = new CWstartEvent(new CastleTeam("team1"), new CastleTeam("team2"), new CastlePlayer(GameStateManager.getTeam1King()), new CastlePlayer(GameStateManager.getTeam2King()));
 				Bukkit.getPluginManager().callEvent(event);	
 				
@@ -377,6 +392,16 @@ public class GameStateManager {
 		    		        	}
 		    		        	if(Bukkit.getOnlinePlayers().size() == plugin.getConfig().getInt("maxPlayers")) {
 		    		        		t.reduceTimer(plugin.getConfig().getConfigurationSection("countdowns.starting").getInt("reducedDelayIfMaxPlayers"));
+		    		        	}
+		    		        	if(plugin.getConfig().getBoolean("countdowns.starting.sounds.enabled") == true) {
+		    		        		if(t.getSecondsLeft() <= plugin.getConfig().getInt("countdowns.starting.sounds.remainingSeconds")) {
+				    		        	Object[] array = Bukkit.getOnlinePlayers().toArray();
+				    		    		for(int i = 0; i < array.length; i++) {
+				    		    			Player player = (Player) array[i];
+				    		    			String[] sound = plugin.getConfig().getString("sounds.countdown").split(",");
+				    		        		player.playSound(player.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
+				    		    		}		
+		    		        		}
 		    		        	}
 		    		        	
 		    		        	for(Player p : Bukkit.getOnlinePlayers()) {
