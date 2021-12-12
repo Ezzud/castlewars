@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import fr.ezzud.castlewar.Main;
@@ -14,14 +15,19 @@ import fr.ezzud.castlewar.commands.admin.setSpawnCMD;
 import fr.ezzud.castlewar.commands.admin.startCMD;
 import fr.ezzud.castlewar.commands.admin.stopCMD;
 import fr.ezzud.castlewar.commands.players.helpCMD;
+import fr.ezzud.castlewar.commands.players.kingsCMD;
 import fr.ezzud.castlewar.commands.players.kitsCMD;
 import fr.ezzud.castlewar.commands.players.teamCMD;
 import fr.ezzud.castlewar.methods.inATeam;
+import fr.ezzud.castlewar.methods.messagesFormatter;
+import net.md_5.bungee.api.ChatColor;
 
 public class CommandHandler implements CommandExecutor {
     static Main plugin = Main.getInstance();
+    static YamlConfiguration messages = Main.messages;
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if(sender.equals(Bukkit.getConsoleSender())) return false;
 		Player player = Bukkit.getPlayer(sender.getName());
 		if(args.length <= 0) {
 			sender.sendMessage("Usage: /castlewar");
@@ -36,6 +42,11 @@ public class CommandHandler implements CommandExecutor {
 	   				new teamCMD(player);
 	   			}
 	   			break;
+	   		case "kings":
+	   			if(GameStateManager.getGameState() == true) {
+	   				new kingsCMD(player);
+	   			}
+	   			break;
 	   		case "reload":
 	   			new reloadCMD(player);
 	   			break;
@@ -43,7 +54,6 @@ public class CommandHandler implements CommandExecutor {
 	   			if(inATeam.isKing(player.getName()) == false) {
 	   				new kitsCMD(player);
 	   			}
-	   			
 	   			break;
 	   		case "start":
 	   			new startCMD(player);
@@ -58,7 +68,7 @@ public class CommandHandler implements CommandExecutor {
 	   			new setLobbyCMD(player);
 	   			break;
 	   		default:
-	   			sender.sendMessage("No command");
+	   			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', messagesFormatter.formatMessage(messages.getString("commands.unknown"))));
 	   			break;
 	   	}
 	   	

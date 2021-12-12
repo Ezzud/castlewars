@@ -16,84 +16,96 @@ commands:
          - "&c/cw start &7- ForceStart the game"
          - "&c/cw stop &7- ForceStop the game"
       footer: "&7-------------------------------------"
+      
+   kings:
+      format: "%teamcolor%%teamname% &7- &6&l%kingname%" # Variables: %prefix% %teamname%, %teamprefix%, %teamcolor%
    reload:
-      successfull: "%prefix% &aThe plugin has been sucessfully reloaded"
+      successfull: "%prefix% &aThe plugin has been sucessfully reloaded" # Variables: %prefix%
    setlobby:
-      world_changed: "%prefix% &aLobby coordinates has been sucessfully set! Game World is now: %world%"   
-      world_unchanged: "%prefix% &aLobby coordinates has been sucessfully set!"   
+      world_changed: "%prefix% &aLobby coordinates has been sucessfully set! Game World is now: %world%" # Variables: %prefix%, %world%
+      world_unchanged: "%prefix% &aLobby coordinates has been sucessfully set!" # Variables: %prefix%
    setspawn:
-      specifyTeam: "%prefix% &cPlease specify a team (team1, team2, spectators)"
-      specifyUnit: "%prefix% &cPlease specify a type of unit (king, soldier)"
-      king: "%prefix% &aKing's spawnpoint of the team %teamcolor%%teamname% &ahas been sucessfully set!"
-      soldier: "%prefix% &aSoldiers's spawnpoint of the team %teamcolor%%teamname% &ahas been sucessfully set!"
-      spectators: "%prefix% &7Spectators&a's spawnpoint has been sucessfully set!"
+      specifyTeam: "%prefix% &cPlease specify a team (team1, team2, spectators)" # Variables: %prefix%
+      specifyUnit: "%prefix% &cPlease specify a type of unit (king, soldier)" # Variables: %prefix%
+      king: "%prefix% &aKing's spawnpoint of the team %teamcolor%%teamname% &ahas been sucessfully set!" # Variables: %prefix%, %teamname%, %teamprefix%, %teamcolor%
+      soldier: "%prefix% &aSoldiers's spawnpoint of the team %teamcolor%%teamname% &ahas been sucessfully set!" # Variables: %prefix%
+      spectators: "%prefix% &7Spectators&a's spawnpoint has been sucessfully set!" # Variables: %prefix%
    start:
-      successfull: "%prefix% &aGame sucessfully started"
-      alreadyStarted: "%prefix% &cGame is already started"
-      notEnough: "%prefix% &cNot enough players to start"
+      successfull: "%prefix% &aGame sucessfully started" # Variables: %prefix%
+      alreadyStarted: "%prefix% &cGame is already started" # Variables: %prefix%
+      notEnough: "%prefix% &cNot enough players to start" # Variables: %prefix%
    stop:
-      successfull: "%prefix% &aGame sucessfully stopped"
-      alreadyStopped: "%prefix% &cGame is already stopped"
+      successfull: "%prefix% &aGame sucessfully stopped" # Variables: %prefix%
+      alreadyStopped: "%prefix% &cGame is already stopped" # Variables: %prefix%
 events:
    starting:
-      startingMessage: "%prefix% &eGame is starting in &7%seconds% &eseconds"
-      startedMessage: "%prefix% &aGame started, Good luck!"
+      startingMessage: "%prefix% &eGame is starting in &7%seconds% &eseconds" # Variables: %prefix%, %seconds%
+      startedMessage: "%prefix% &aGame started, Good luck!" # Variables: %prefix%
       kingMessage:
-         - "%prefix% &7You are the &e&lKING &7of the team %teamcolor%%teamname%"
-         - "&6Objective: &7Survive and kill the enemy king"
+         - "%prefix% &7You are the &e&lKING &7of the team %teamcolor%%teamname%" # Variables: %prefix% %teamname%, %teamprefix%, %teamcolor%, %kingname%
+         - "&6Objective: &7Survive and kill the enemy king" # Variables: %prefix% %teamname%, %teamprefix%, %teamcolor%, %kingname%
       soldierMessage:
-         - "%prefix% &7You are a &8&lSOLDIER &7of the team %teamcolor%%teamname%"
-         - "&6Objective: &7Protect your king and kill the enemy king"
-         - "&7Your king is %teamcolor%&l%king%"  
-   kitMessage: "%prefix% &eYou got the %kitname% &ekit" 
+         - "%prefix% &7You are a &8&lSOLDIER &7of the team %teamcolor%%teamname%" # Variables: %prefix% %teamname%, %teamprefix%, %teamcolor%, %kingname%
+         - "&6Objective: &7Protect your king and kill the enemy king" # Variables: %prefix% %teamname%, %teamprefix%, %teamcolor%, %kingname%
+         - "&7Your king is %teamcolor%&l%kingname%" # Variables: %prefix% %teamname%, %teamprefix%, %teamcolor%, %kingname%
+   kitMessage: "%prefix% &eYou got the %kitname% &ekit" # Variables: %prefix%, %kitname%
    teamChange:
-      join: "%prefix% &eYou joined the team %teamcolor%%teamname%"
-      leave: "%prefix% &eYou left your team"
+      join: "%prefix% &eYou joined the team %teamcolor%%teamname%" # Variables: %prefix% %teamname%, %teamprefix%, %teamcolor%
+      leave: "%prefix% &eYou left your team" # Variables: %prefix%
    death:
       soldier:
          message: 
-            byPlayer: "%prefix% &cYou got killed by %killer%"
-            other: "%prefix% &cYou are dead"
-            respawned: "%prefix% &aYou have respawned!"
+            byPlayer: "%prefix% &cYou got killed by %killer%" # Variables: %prefix% %player%, %killer%
+            other: "%prefix% &cYou are dead" # Variables: %prefix%
+            respawned: "%prefix% &aYou have respawned!" # Variables: %prefix%
          title:
-            main: "&eRespawning in..."
-            subtitle: "&c%seconds%" 
+            main: "&eRespawning in..." # Variables: %prefix% %seconds%
+            subtitle: "&c%seconds%" # Variables: %prefix% %seconds%
       king:
          message:
-            byPlayer: "%prefix% &eThe king &6&l%player% &ehas been killed by &3%killer%" 
-            other: "%prefix% &6&l%player% &ehas been killed" 
-            leave: "%prefix% &cGame has been stopped because a king left the game"
-         victoryMessage: "%prefix% &aVictory of the team %teamcolor%%teamname%" 
-      restartingIn: "%prefix% &eRestarting in &c%seconds% &eseconds"
+            byPlayer: "%prefix% &eThe king &6&l%player% &ehas been killed by &3%killer%"  # Variables: %prefix% %player% %killer%
+            other: "%prefix% &6&l%player% &ehas been killed" # Variables: %prefix% %player%
+            leave: "%prefix% &cGame has been stopped because a king left the game" # Variables: %prefix%
+         victoryMessage: "%prefix% &aVictory of the team %teamcolor%%teamname%" # Variables: %prefix% %teamname%, %teamprefix%, %teamcolor%, %kingname%
+      restartingIn: "%prefix% &eRestarting in &c%seconds% &eseconds" # Variables: %prefix%, %seconds%
       
 kits: 
-   notExist: "%prefix% &cThis kit doesn't exists!" 
-   kitChange: "%prefix% &eYou selected the %kitname% &ekit"
-   noPermission: "%prefix% &cYou don't have permission to use this kit"   
-   alreadySelected: "%prefix% &cKit already selected"
+   notExist: "%prefix% &cThis kit doesn't exists!" # Variables: %prefix%
+   kitChange: "%prefix% &eYou selected the %kitname% &ekit" # Variables: %prefix%, %kitname%
+   noPermission: "%prefix% &cYou don't have permission to use this kit" # Variables: %prefix%
+   alreadySelected: "%prefix% &cKit already selected" # Variables: %prefix%
 
 teams:
-   full: "%prefix% &cTeam is full"
-   notBalanced: "%prefix% &cTeams are not balanced"  
+   full: "%prefix% &cTeam is full" # Variables: %prefix%
+   notBalanced: "%prefix% &cTeams are not balanced" # Variables: %prefix% 
    
 gui:
    kits:
-      noPermission: "&cYou don't have permission to use this kit!"
-      alreadySelected: "&cKit already selected"
-      select: "&aClick to select this kit!"
+      noPermission: "&cYou don't have permission to use this kit!" # Variables: %prefix%
+      alreadySelected: "&cKit already selected" # Variables: %prefix%
+      select: "&aClick to select this kit!" # Variables: %prefix%
    team:
-      alreadyInTeam: "&cYou are already in this team"
-      full: "&cTeam is full!"
-      join: "&aClick to join the team"
-      teamListFormat: "&e- %player%"
+      alreadyInTeam: "&cYou are already in this team" # Variables: %prefix%
+      full: "&cTeam is full!" # Variables: %prefix%
+      join: "&aClick to join the team" # Variables: %prefix%
+      teamListFormat: "&e- %player%" # Variables: %prefix%, %player%
       
 gamestates:
-   waiting: "&cWaiting &7(%playercount%/%maxplayers%)"
+   waiting: "&cWaiting &7(%playercount%/%maxplayers%)" # Variables: %playercount%, %maxplayers%
    starting: "&eStarting..."
    playing: "&aPlaying!"
    ending: "&6Ending..."
    
    
+   
+   
+#################### Scoreboard ####################
+#
+# Ingame Scoreboard: %gamestate%, %teamcolor%, %teamprefix%, %teamname%, %kitname%, %kingname%, %kinghealth%, %h%, %m%, %s%, %rank%
+# Spectators Scoreboard: %team1color%, %team1name%, %team1prefix%, %king1health%, %king2health%, %gamestate%, %h%, %m%, %s%
+# Waiting lobby Scoreboard: %teamname%, %kitname%, %h%, %m%, %s%
+#
+####################################################    
 scoreboard:
    ranks:
       king: "&6KING"

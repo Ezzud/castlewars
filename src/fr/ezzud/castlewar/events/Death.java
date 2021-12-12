@@ -56,7 +56,8 @@ public class Death implements Listener {
 				    	  ArrayList<?> list2 = new ArrayList<>(Bukkit.getOnlinePlayers());
 				    	  list2.forEach((p) -> {
 				    		  Player player = ((Player) p);
-				    		  player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 100);
+	    		    			String[] sound = plugin.getConfig().getString("sounds.death").split(",");
+	    		        		player.playSound(player.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 				    		  player.setGameMode(GameMode.SPECTATOR);
 				    		  player.setDisplayName(ChatColor.RESET + player.getName());
 				    		  player.setPlayerListName(ChatColor.RESET + player.getName());
@@ -148,7 +149,8 @@ public class Death implements Listener {
 				    	  ArrayList<?> list2 = new ArrayList<>(Bukkit.getOnlinePlayers());
 				    	  list2.forEach((p) -> {
 				    		  Player player = ((Player) p);
-				    		  player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 100);
+	    		    			String[] sound = plugin.getConfig().getString("sounds.death").split(",");
+	    		        		player.playSound(player.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 				    		  player.setGameMode(GameMode.SPECTATOR);
 				    		  player.setDisplayName(ChatColor.RESET + player.getName());
 				    		  player.setPlayerListName(ChatColor.RESET + player.getName());
@@ -260,16 +262,17 @@ public class Death implements Listener {
 				    						victim.teleport(loc);
 				    						victim.setHealth(20.0);
 				    						victim.getInventory().clear();
-				    						new kitManager().setPlayerKit(victim);
 				    						
 				    					} else if(inATeam.whichTeam(victim.getName()).equalsIgnoreCase("team2")) {
 				    						String[] coords = team2Config.getString("soldier_spawnpoint").split(",");
 				    						Location loc = new Location(Bukkit.getWorld(plugin.getConfig().getString("game_world") + "-castlewar"), Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(coords[3]), Float.parseFloat(coords[3]));
 				    						victim.teleport(loc);
 				    						victim.setHealth(20.0);
-				    						victim.getInventory().clear();
-				    						new kitManager().setPlayerKit(victim);
+				    						victim.getInventory().clear();	
 				    					}
+				    					new kitManager().setPlayerKit(victim);
+				    					String[] sound = plugin.getConfig().getString("sounds.respawn").split(",");
+			    		        		victim.playSound(victim.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 	    		        	
 				    		        },
 				    		        (t) -> {
@@ -287,9 +290,9 @@ public class Death implements Listener {
 	   
 	   @EventHandler
 	   public void onDamageNoEntity(EntityDamageEvent event) {
-		   if(!(event.getEntity() instanceof Player)) return; 
+		   if(event.getEntity() instanceof Player) {	   
 			Player victim = (Player) event.getEntity();
-			if(victim.getHealth() - event.getDamage() < 1) {
+			if(victim.getHealth() - event.getDamage() <= 0) {
 				event.setCancelled(true);
 			   YamlConfiguration messages = Main.messages;
 			   if(victim.getName().equalsIgnoreCase(GameStateManager.team1King)) {
@@ -298,7 +301,8 @@ public class Death implements Listener {
 			    	  ArrayList<?> list2 = new ArrayList<>(Bukkit.getOnlinePlayers());
 			    	  list2.forEach((p) -> {
 			    		  Player player = ((Player) p);
-			    		  player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 100);
+  		    			String[] sound = plugin.getConfig().getString("sounds.death").split(",");
+		        		player.playSound(player.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 			    		  player.setGameMode(GameMode.SPECTATOR);
 			    		  player.setDisplayName(ChatColor.RESET + player.getName());
 			    		  player.setPlayerListName(ChatColor.RESET + player.getName());
@@ -387,7 +391,8 @@ public class Death implements Listener {
 			    	  ArrayList<?> list2 = new ArrayList<>(Bukkit.getOnlinePlayers());
 			    	  list2.forEach((p) -> {
 			    		  Player player = ((Player) p);
-			    		  player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 100);
+  		    			String[] sound = plugin.getConfig().getString("sounds.death").split(",");
+		        		player.playSound(player.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 			    		  player.setGameMode(GameMode.SPECTATOR);
 			    		  player.setDisplayName(ChatColor.RESET + player.getName());
 			    		  player.setPlayerListName(ChatColor.RESET + player.getName());
@@ -513,6 +518,7 @@ public class Death implements Listener {
 			    		);
 			    	  timer.scheduleTimer();
 			   }
+			}
 		   }
 	   }
 }

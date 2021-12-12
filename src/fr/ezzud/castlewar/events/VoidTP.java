@@ -46,6 +46,7 @@ public class VoidTP implements Listener {
 		   if(config.getBoolean("voidKill") == false) return;
 		   if(event.getTo().getY() < 1) {
 			   Player victim = event.getPlayer();
+			   if(victim.getGameMode() == GameMode.SPECTATOR) return;
 			   YamlConfiguration messages = Main.messages;
 			   if(victim.getName().equalsIgnoreCase(GameStateManager.team1King)) {
 				   GameStateManager.GameState = false;
@@ -53,7 +54,8 @@ public class VoidTP implements Listener {
 			    	  ArrayList<?> list2 = new ArrayList<>(Bukkit.getOnlinePlayers());
 			    	  list2.forEach((p) -> {
 			    		  Player player = ((Player) p);
-			    		  player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 100);
+  		    			String[] sound = plugin.getConfig().getString("sounds.death").split(",");
+		        		player.playSound(player.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 			    		  player.setGameMode(GameMode.SPECTATOR);
 			    		  player.setDisplayName(ChatColor.RESET + player.getName());
 			    		  player.setPlayerListName(ChatColor.RESET + player.getName());
@@ -142,7 +144,8 @@ public class VoidTP implements Listener {
 			    	  ArrayList<?> list2 = new ArrayList<>(Bukkit.getOnlinePlayers());
 			    	  list2.forEach((p) -> {
 			    		  Player player = ((Player) p);
-			    		  player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 100);
+  		    			String[] sound = plugin.getConfig().getString("sounds.death").split(",");
+		        		player.playSound(player.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
 			    		  player.setGameMode(GameMode.SPECTATOR);
 			    		  player.setDisplayName(ChatColor.RESET + player.getName());
 			    		  player.setPlayerListName(ChatColor.RESET + player.getName());
@@ -248,7 +251,6 @@ public class VoidTP implements Listener {
 			    						victim.teleport(loc);
 			    						victim.setHealth(20.0);
 			    						victim.getInventory().clear();
-			    						new kitManager().setPlayerKit(victim);
 			    						
 			    					} else if(inATeam.whichTeam(victim.getName()).equalsIgnoreCase("team2")) {
 			    						String[] coords = team2Config.getString("soldier_spawnpoint").split(",");
@@ -256,8 +258,10 @@ public class VoidTP implements Listener {
 			    						victim.teleport(loc);
 			    						victim.setHealth(20.0);
 			    						victim.getInventory().clear();
-			    						new kitManager().setPlayerKit(victim);
 			    					}
+			    					new kitManager().setPlayerKit(victim);
+		    		    			String[] sound = plugin.getConfig().getString("sounds.respawn").split(",");
+		    		        		victim.playSound(victim.getLocation(), Sound.valueOf(sound[0]), Integer.parseInt(sound[1]), Integer.parseInt(sound[2]));
     		        	
 			    		        },
 			    		        (t) -> {

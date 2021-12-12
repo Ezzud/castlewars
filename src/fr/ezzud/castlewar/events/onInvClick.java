@@ -156,9 +156,6 @@ public class onInvClick implements Listener {
 		    			return;
 		    		}
 		    		TeamManager.addMemberToTeam(player, "team1");
-		    		
-					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
-					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team1"));
 		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		    		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -190,11 +187,6 @@ public class onInvClick implements Listener {
 			    		}
 			    		TeamManager.removeMemberFromTeam(player, "team2");
 			    		TeamManager.addMemberToTeam(player, "team1");
-			    		
-			    		
-						player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
-			    		
-						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam1().getColor() + player.getName() + "&r"));
 						String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team1"));
 			    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 			    		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -232,9 +224,6 @@ public class onInvClick implements Listener {
 		    		}
 		    		
 		    		TeamManager.addMemberToTeam(player, "team2");
-		    		
-					player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
-					player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team2"));
 		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 		    		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -266,11 +255,6 @@ public class onInvClick implements Listener {
 			    		}
 			    		TeamManager.removeMemberFromTeam(player, "team1");
 			    		TeamManager.addMemberToTeam(player, "team2");
-			    		
-			    		
-						player.setDisplayName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
-			    		
-						player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', TeamManager.getTeam2().getColor() + player.getName() + "&r"));
 						String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("join"), new CastleTeam("team2"));
 			    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 			    		for(Player p : Bukkit.getOnlinePlayers()) {
@@ -298,8 +282,6 @@ public class onInvClick implements Listener {
 		    		}
 					String msg = messagesFormatter.formatTeamMessage(messages.getConfigurationSection("events.teamChange").getString("leave"), new CastleTeam("team1"));
 		    		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
-		    		player.setDisplayName(ChatColor.translateAlternateColorCodes('&', player.getName()));
-		    		player.setPlayerListName(ChatColor.translateAlternateColorCodes('&', player.getName()));
 		    		for(Player p : Bukkit.getOnlinePlayers()) {
 		    			if(p.getOpenInventory().getTitle().equalsIgnoreCase(e.getView().getTitle())) {
 				    		new GUIManager(p).initializeTeamGUI(new TeamGUI(p).getInventory());

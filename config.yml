@@ -14,10 +14,18 @@ gameRules:
    mobSpawning: false
    animalSpawning: false
    voidKill: true
+  
+  
+# Sound format: SOUND NAME,VOLUME,PITCH
+sounds:
+   start: ENTITY_ENDER_DRAGON_GROWL,100,1
+   death: ENTITY_WITHER_DEATH,100,100
+   respawn: ENTITY_PLAYER_LEVELUP,100,1
+   countdown: ENTITY_EXPERIENCE_ORB_PICKUP,100,1
    
 endCommands:
    win:
-      - eco give %player% 00
+      - eco give %player% 0
       - tell %player% You win!
    loose:
       - eco give %player% 1
@@ -25,14 +33,17 @@ endCommands:
 
 joinLeaveMessages:
    enabled: true
-   join: "%prefix% &e%player% &7joined the game (%playercount%/%maxplayers%)"
-   leave: "%prefix% &e%player% &7left the game (%playercount%/%maxplayers%)"
+   join: "%prefix% &e%player% &7joined the game (%playercount%/%maxplayers%)" # Variables: %prefix%, %player%, %playercount%, %maxplayers%
+   leave: "%prefix% &e%player% &7left the game (%playercount%/%maxplayers%)" # Variables: %prefix%, %player%, %playercount%, %maxplayers%
 
 
 countdowns:
    starting:
       delayBeforeGameStart: 60
       reducedDelayIfMaxPlayers: 10
+      sounds:
+         enabled: true
+         remainingSeconds: 3
    end: 
       delayBeforeRestart: 10
    respawnDelay: 5
@@ -44,15 +55,17 @@ kingConfig:
 
 chatFormat:
    enabled: true
-   format: '&7%teamcolor%%teamname% %player%&f: %message%'
+   format: '&7%teamcolor%%teamname% %player%&f: %message%' # Variables: %prefix%, %player%,%message% , %teamname%, %teamprefix%, %teamcolor%
    allowColors: true
    colorsPermission: castlewar.colors
    teamChat:
      enabled: true
-     privateChatFormat: '&7[%teamcolor%Private - %teamname%&7] %teamcolor%%player%&f: &e%message%'
-     globalChatFormat: '&7[%teamcolor%%teamname%&7] %player%&f: &f%message%'
+     privateChatFormat: '&7[%teamcolor%Private - %teamname%&7] %teamcolor%%player%&f: &e%message%' # Variables: %prefix%, %player%,%message% , %teamname%, %teamprefix%, %teamcolor%
+     globalChatFormat: '&7[%teamcolor%%teamname%&7] %player%&f: &f%message%' # Variables: %prefix%, %player%,%message% , %teamname%, %teamprefix%, %teamcolor%
      globalChatPrefix: '@'
 
+
+# Item format: ITEM ID,ITEM DATA,NAME
 teamChooseItem: 
    enabled: true
    item: BANNER,0,&eChoose your team
@@ -84,12 +97,12 @@ team2:
    
 noTeam:
    name: "&f"
-   color: "&c"
+   color: "&f"
    prefix: "&f"
    
 rankType: "suffix"   
 soldier_rank: "&7"
-king_rank: "&e[KING]"
+king_rank: " &e[KING]"
 
 default_kit: "knight"
                   

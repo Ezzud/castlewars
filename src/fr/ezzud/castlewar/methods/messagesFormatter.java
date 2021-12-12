@@ -18,6 +18,9 @@ public class messagesFormatter {
 		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
 		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
 		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
+		if(GameStateManager.GameState == true) {
+			message = message.replaceAll("%kingname%", ChatColor.translateAlternateColorCodes('&', team.getKing().getName()));
+		}
 		return message;
 	}
 	

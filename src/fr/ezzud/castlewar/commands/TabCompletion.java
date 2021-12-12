@@ -19,8 +19,7 @@ public class TabCompletion implements TabCompleter{
 
                 List<String> list = new ArrayList<>();
                 list.add("help");
-                list.add("list");
-                list.add("teams");
+                list.add("kings");
                 list.add("kits");
                 if(GameStateManager.GameState == false) {
                 	list.add("menu");
@@ -42,9 +41,7 @@ public class TabCompletion implements TabCompleter{
         				return null;
         			case "help":
         				return null;
-        			case "teams":
-        				return null;
-        			case "list":
+        			case "kings":
         				return null;
         			case "stop":
         				return null;
