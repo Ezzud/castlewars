@@ -17,6 +17,9 @@ gameRules:
   
   
 # Sound format: SOUND NAME,VOLUME,PITCH
+# Sounds list (1.8-1.12): https://helpch.at/docs/1.12.2/index.html?org/bukkit/Sound.html
+# Sounds list (1.13+): https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+
 sounds:
    start: ENTITY_ENDER_DRAGON_GROWL,100,1
    death: ENTITY_WITHER_DEATH,100,100
@@ -24,6 +27,7 @@ sounds:
    countdown: ENTITY_EXPERIENCE_ORB_PICKUP,100,1
    
 endCommands:
+   # Variables: %player%
    win:
       - eco give %player% 0
       - tell %player% You win!
@@ -66,6 +70,8 @@ chatFormat:
 
 
 # Item format: ITEM ID,ITEM DATA,NAME
+# Item list (1.8-1.12.2): https://helpch.at/docs/1.12.2/org/bukkit/Material.html
+# Item list (1.13+): https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 teamChooseItem: 
    enabled: true
    item: BANNER,0,&eChoose your team

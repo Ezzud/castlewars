@@ -1,6 +1,7 @@
 commands:
    prefix: "&e[&6CastleWar&e]"
    noPermission: "%prefix% &cYou don't have the permission to do that!"
+   unknown: "%prefix% &cUnknown command"
    help:
       header: "&7----------&r &6CastleWars v%version% &7----------"
       noAdmin:

@@ -1,4 +1,11 @@
 king:
+   # Item format: ITEM ID,ITEM DATA
+   # Item list (1.8-1.12.2): https://helpch.at/docs/1.12.2/org/bukkit/Material.html
+   # Item list (1.13+): https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+   # Enchantments format: ENCHANT NAME,LEVEL
+   # Enchant list (1.8-1.12): https://helpch.at/docs/1.12.2/index.html?org/bukkit/enchantments/Enchantment.html
+   # Enchant list (1.13+): https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+   
    items:
       0:
          material: IRON_SWORD:0
