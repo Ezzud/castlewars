@@ -23,23 +23,23 @@ public class Chat implements Listener {
     
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
-    	if(event.isCancelled() == true) return;
+    	if(event.isCancelled()) return;
     	ConfigurationSection config = plugin.getConfig().getConfigurationSection("chatFormat");
-    	if(config.getBoolean("enabled") == false) return;
+    	if(!config.getBoolean("enabled")) return;
     	
     	Player player = event.getPlayer();
     	event.setCancelled(true);
-    	if(GameStateManager.GameState == true) {
+    	if(GameStateManager.GameState) {
     		
-        	if(config.getConfigurationSection("teamChat").getBoolean("enabled") == false) {
-            	if(inATeam.checkTeam(player.getName()) == false) {
+        if(!config.getConfigurationSection("teamChat").getBoolean("enabled")) {
+            	if(!inATeam.checkTeam(player.getName())) {
                		CastleTeam team = TeamManager.getNoTeam();
                		String message = ChatColor.translateAlternateColorCodes('&', config.getString("format")) ;
                		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
                		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-               		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
+               		if(config.getBoolean("allowColors") || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
                		} else {
                			message = message.replaceAll("%message%", event.getMessage());
@@ -54,7 +54,7 @@ public class Chat implements Listener {
                 		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                 		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
                 		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-                   		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
+                   		if(config.getBoolean("allowColors") || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                    			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
                    		} else {
                    			message = message.replaceAll("%message%", event.getMessage());
@@ -67,7 +67,7 @@ public class Chat implements Listener {
                 		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                 		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
                 		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-                   		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
+                   		if(config.getBoolean("allowColors") || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                    			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
                    		} else {
                    			message = message.replaceAll("%message%", event.getMessage());
@@ -77,20 +77,20 @@ public class Chat implements Listener {
             	}
 
         	} else {
-            	if(inATeam.checkTeam(player.getName()) == false) {
+            	if(!inATeam.checkTeam(player.getName())) {
                		CastleTeam team = TeamManager.getNoTeam();
                		String message = ChatColor.translateAlternateColorCodes('&', config.getString("format")) ;
                		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
                		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
                		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-               		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
+               		if(config.getBoolean("allowColors") || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
                		} else {
                			message = message.replaceAll("%message%", event.getMessage());
                		}
                		for(Player p : Bukkit.getOnlinePlayers()) {
-               			if(inATeam.checkTeam(p.getName()) == false) {
+               			if(!inATeam.checkTeam(p.getName())) {
                				p.sendMessage(message);
                			}
                		}
@@ -104,7 +104,7 @@ public class Chat implements Listener {
                    		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                    		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
                    		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-                   		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
+                   		if(config.getBoolean("allowColors") || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                    			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage().substring(1)));
                    		} else {
                    			message = message.replaceAll("%message%", event.getMessage());
@@ -117,7 +117,7 @@ public class Chat implements Listener {
                    		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
                    		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
                    		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-                   		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
+                   		if(config.getBoolean("allowColors") || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
                    			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
                    		} else {
                    			message = message.replaceAll("%message%", event.getMessage());
@@ -134,47 +134,22 @@ public class Chat implements Listener {
 
         	}
     	} else {
-        	if(inATeam.checkTeam(player.getName()) == false) {
+        	if(!inATeam.checkTeam(player.getName()))
            		CastleTeam team = TeamManager.getNoTeam();
-           		String message = ChatColor.translateAlternateColorCodes('&', config.getString("format")) ;
-           		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
-           		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
-           		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-           		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-           		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
-           			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
-           		} else {
-           			message = message.replaceAll("%message%", event.getMessage());
-           		}
-           		Bukkit.broadcastMessage(message);		   
-        	} else {
-            	if(inATeam.whichTeam(player.getName()).equalsIgnoreCase("team1")) {
+        	else if(inATeam.whichTeam(player.getName()).equalsIgnoreCase("team1"))
             		CastleTeam team = TeamManager.getTeam1();
-            		String message = ChatColor.translateAlternateColorCodes('&', config.getString("format")) ;
-            		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
-            		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
-            		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-            		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-               		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
-               			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
-               		} else {
-               			message = message.replaceAll("%message%", event.getMessage());
-               		}
-            		Bukkit.broadcastMessage(message);
-            	} else {
-            		CastleTeam team = TeamManager.getTeam2();
-            		String message = ChatColor.translateAlternateColorCodes('&', config.getString("format")) ;
-            		message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
-            		message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
-            		message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
-            		message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
-               		if(config.getBoolean("allowColors") == true || player.hasPermission(config.getString("colorsPermission")) || player.isOp()) {
-               			message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
-               		} else {
-               			message = message.replaceAll("%message%", event.getMessage());
-               		}
-            		Bukkit.broadcastMessage(message);
-            	}       		
+            	else CastleTeam team = TeamManager.getTeam2();
+			
+		String message = ChatColor.translateAlternateColorCodes('&', config.getString("format")) ;
+            	message = message.replaceAll("%teamcolor%", ChatColor.translateAlternateColorCodes('&', team.getColor()));
+            	message = message.replaceAll("%teamname%", ChatColor.translateAlternateColorCodes('&', team.getName()));
+            	message = message.replaceAll("%teamprefix%", ChatColor.translateAlternateColorCodes('&', team.getPrefix()));
+            	message = message.replaceAll("%player%", ChatColor.translateAlternateColorCodes('&', player.getName()));
+               	if(config.getBoolean("allowColors") || player.hasPermission(config.getString("colorsPermission")) || player.isOp())
+               		message = message.replaceAll("%message%", ChatColor.translateAlternateColorCodes('&', event.getMessage()));
+               	else
+			message = message.replaceAll("%message%", event.getMessage());
+            	Bukkit.broadcastMessage(message);
         	} 		
     	}
 
