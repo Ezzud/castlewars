@@ -12,33 +12,24 @@ Features planned:
   - ✅ Respawn delay
   - ➖ End Effects (Animations)
   
-Features:
+Features added:
   <p>
 
-  - Particles/Glowing
-  - Team Chat
-  - Tablist completer
-  - Configuration Command
-  - Fully customisable (messages, GUIs, Kits, teams)
-  - Custom Scoreboard
-  - Usage of NameTagEdit
-  - Spectator mode
-  - Custom Join/Leave messages
-  - API Events & Functions
-  - Auto-restart
-  - Auto-shutdown server
-  - Custom cooldowns
-  - Custom Game Rules
-  - Win/Loose commands
-  - World refreshing
+  - ✅Particles/Glowing
+  - ✅Team Chat
+  - ✅Tablist completer
+  - ✅Configuration Command
+  - ✅Fully customisable (messages, GUIs, Kits, teams)
+  - ✅Custom Scoreboard
+  - ✅Usage of NameTagEdit
+  - ✅Spectator mode
+  - ✅Custom Join/Leave messages
+  - ✅API Events & Functions
+  - ✅Auto-restart
+  - ✅Auto-shutdown server
+  - ✅Custom cooldowns
+  - ✅Custom Game Rules
+  - ✅Win/Loose commands
+  - ✅World refreshing
+  - ✅Customisable sounds
 </p>
-
-TO-DO:
-
-<p>
-    
-    - "list" Command
-    - "team" command
-    - Customisable sounds
-  
-  </p>
